@@ -10,6 +10,7 @@ class Object():
 		x: horizontal position of object
 		y: vertical position of object
 		belong: object belong a space
+		Test github
 		"""
 
 		self.x = x
