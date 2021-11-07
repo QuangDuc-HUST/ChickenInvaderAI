@@ -11,6 +11,7 @@ class Object():
 		y: vertical position of object
 		belong: object belong a space
 		Test github
+		label: ....
 		"""
 
 		self.x = x
