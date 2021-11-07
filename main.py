@@ -10,8 +10,6 @@ class Object():
 		x: horizontal position of object
 		y: vertical position of object
 		belong: object belong a space
-		Test github
-		label: ....
 		"""
 
 		self.x = x
@@ -74,7 +72,6 @@ class SpaceShip(Object):
 		elif dir in [0, 'w']: 
 			self.attack()
 			self.available = not self.available
-		# elif dir == 0 or dir == 'w':
 		self.belong.figure[self.x, self.y] += 2
 
 	def attack(self):
@@ -162,7 +159,6 @@ class Egg(Object):
 		\tTrue: if y postion of egg is at the bottom
 		\tFalse: elsewhere
 		"""
-		# return self.x >= self.belong.height -1 and self.collided == False
 		return self.x >= self.belong.height -1
 	
 	def up(self):

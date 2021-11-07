@@ -4,7 +4,7 @@ from main import *
 
 
 # main
-space, ship = environment_initialize(10,7,6)
+space, ship = environment_initialize(10,7,3)
 print(space.figure)
 print('-+-+'*20)
 i = 0
