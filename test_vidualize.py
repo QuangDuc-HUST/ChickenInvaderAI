@@ -67,8 +67,14 @@ def draw_screen(step: str):
                     draw_ship(x, y)
                 if data[y][x] == 4:
                     draw_egg(x, y)
+                if data[y][x] == 5:
+                    draw_chicken(x, y)
+                    draw_egg(x, y)
                 if data[y][x] == 7:
                     draw_laser(x, y)
+                if data[y][x] == 9:
+                    draw_ship(x, y)
+                    draw_egg(x, y)
                 if data[y][x] == 11:
                     draw_egg(x, y)
                     draw_laser(x, y)
@@ -98,11 +104,11 @@ def display():
             if event.type == pygame.KEYDOWN:
                 # Press LEFT_ARROW to see previous step
                 if event.key == pygame.K_LEFT:
-                    if step < len(data_dict.keys()):
+                    if step > 0:
                         step -= 1
                 # Press RIGHT_ARROW to see next step
                 if event.key == pygame.K_RIGHT:
-                    if step > 0:
+                    if step < len(data_dict.keys()):
                         step += 1
     pygame.quit()
 
