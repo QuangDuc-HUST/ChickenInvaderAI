@@ -1,3 +1,5 @@
+# RUN game.py TO GET a.json BEFORE RUN THIS FILE
+
 import pygame
 import os
 import json
@@ -12,7 +14,7 @@ White, Grey = (255, 255, 255), (100, 100, 100)
 
 # __SET UP__
 unit = 60
-size = (7, 9)
+size = (7, 10)
 screen_width = unit*size[0]
 screen_height = unit*size[1]
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -94,12 +96,14 @@ def display():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.KEYDOWN:
+                # Press LEFT_ARROW to see previous step
                 if event.key == pygame.K_LEFT:
                     if step < len(data_dict.keys()):
-                        step += 1
+                        step -= 1
+                # Press RIGHT_ARROW to see next step
                 if event.key == pygame.K_RIGHT:
                     if step > 0:
-                        step -= 1
+                        step += 1
     pygame.quit()
 
 
