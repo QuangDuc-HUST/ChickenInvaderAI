@@ -8,7 +8,7 @@ unit = 60
 size = (7, 9)
 screen_width, screen_height = unit*size[0],  unit*(size[1]+1)
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("CHICKEN IVADERS")
+pygame.display.set_caption("CHICKEN INVADERS")
 pygame.init()
 pygame.font.init()
 # __LOAD IMAGE__

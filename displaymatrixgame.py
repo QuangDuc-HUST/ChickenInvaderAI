@@ -1,8 +1,6 @@
 # import algo, main
 from main import *
 
-# Test github
-
 # main
 all_step = dict()
 space, ship = environment_initialize(10, 7, 3)
