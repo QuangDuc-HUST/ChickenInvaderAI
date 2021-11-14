@@ -1,6 +1,10 @@
 # import algo, main
 from main import *
 
+## Functions test
+
+
+
 # main
 all_step = dict()
 space, ship = environment_initialize(10, 7, 3)

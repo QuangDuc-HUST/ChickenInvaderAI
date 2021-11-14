@@ -84,7 +84,7 @@ step = 0
 run = True
 finish = False
 to_json(space.figure, all_step, i)
-FPS = 30
+FPS = 60
 clock = pygame.time.Clock()
 while run:
     clock.tick(FPS)

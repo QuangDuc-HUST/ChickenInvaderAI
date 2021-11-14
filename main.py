@@ -11,7 +11,6 @@ class Object():
         y: vertical position of object
         belong: object belong a space
         """
-
         self.x = x
         self.y = y
         self.collided = False
@@ -20,7 +19,7 @@ class Object():
 
     def collide(self, other: 'Object'):
         """
-        function that check whether an object collides another object\\
+        function that check whethr an object collides another object\\
         (2 objects have same label cannot collide)
                 return True if collision occurs\\
                 else False"""
