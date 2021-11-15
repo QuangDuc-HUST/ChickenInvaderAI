@@ -255,6 +255,25 @@ def environment_initialize(height:int, width:int, num:int):
 
 	return space, space.spaceship
 
+def invader_actions(space: 'Space', step:'int'):
+	acting_possible_invaders = []
+	for invader in space.invaders:
+		x, y = invader.get_position()
+		if space.figure[x+ 1, y ] != 1:
+			acting_possible_invaders.append(invader)
+	if step % 3 == 0 : 
+		if len(acting_possible_invaders) > 3: 
+			laying_invader = sorted(np.random.choice(range(len(acting_possible_invaders)), 3, replace=False))
+			for i in laying_invader:
+				acting_possible_invaders[i].lay()
+	
+		else:
+			for i in acting_possible_invaders:
+				i.lay()
+
+
+
+	
 
 def environment_changes(space:'Space', step:int):
 	"""
@@ -265,19 +284,18 @@ def environment_changes(space:'Space', step:int):
 		egg.drop()
 	for bullet in space.bullets.copy():
 		bullet.move()
-	
 	#invader actions
-	if step % 3 == 0:
-		try:
-			laying_invader = sorted(np.random.choice(range(len(space.invaders)), 3, replace=False))
-			# if step % 3 == 0:
-			for i in laying_invader:
-				space.invaders[i].lay()
+	# if step % 3 == 0:
+	# 	try:
+	# 		laying_invader = sorted(np.random.choice(range(len(space.invaders)), 3, replace=False))
+	# 		# if step % 3 == 0:
+	# 		for i in laying_invader:
+	# 			space.invaders[i].lay()
 				
-		except:
-			for invader in space.invaders:
-				invader.lay()
-
+	# 	except:
+	# 		for invader in space.invaders:
+	# 			invader.lay()
+	invader_actions(space=space, step = step)
 
 def check_collision(space:'Space'):
 	"""
@@ -304,4 +322,4 @@ def check_winning(space:'Space'):
 	Check whether the Agent is winning
 	Return True if not reach terminal state
 		(Winning when number of invaders is 0)"""
-	return space.invaders.__len__ == 0
+	return len(space.invaders) == 0
