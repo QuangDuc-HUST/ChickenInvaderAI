@@ -63,7 +63,7 @@ class SpaceShip(Object):
 		make an attack available in next step 
 		"""
 		self.belong.figure[self.x, self.y] -= 2
-		if dir in [1,2,'a', 'd', 'left', 'right']:
+		if dir in [1,2,'a', 'd', 'left', 'right', 'remain']:
 			if dir in ['left', 1, 'a'] and self.y >=1:
 				self.y -=1
 			elif dir in ['right', 2, 'd'] and self.y < self.belong.width -1:
@@ -94,7 +94,7 @@ class SpaceShip(Object):
 
 	def up(self):
 		self.belong.figure[self.x, self.y] +=2
-
+		self.belong.spaceship = self
 
 class Bullet(Object):
 
@@ -215,7 +215,7 @@ class Space():
 		"""
 		self.height = height
 		self.width = width
-		self.invaders_num = num
+
 		self.spaceship = None
 		self.invaders = []
 		self.eggs = []
@@ -250,7 +250,9 @@ def environment_initialize(height:int, width:int, num:int):
 	"""
 	space = Space(height=height, width=width)
 	ship_y = np.random.randint(width)
-	space.spaceship = SpaceShip(x=height-1, y=ship_y, belong=space)
+	# ship_y = space.width //2  
+	# ship_y = 0
+	_ = SpaceShip(x=height-1, y=ship_y, belong=space)
 	invaders_initialize(space=space, num=num)
 
 	return space, space.spaceship
@@ -284,6 +286,7 @@ def environment_changes(space:'Space', step:int):
 		egg.drop()
 	for bullet in space.bullets.copy():
 		bullet.move()
+	invader_actions(space=space, step = step)
 	#invader actions
 	# if step % 3 == 0:
 	# 	try:
@@ -295,7 +298,6 @@ def environment_changes(space:'Space', step:int):
 	# 	except:
 	# 		for invader in space.invaders:
 	# 			invader.lay()
-	invader_actions(space=space, step = step)
 
 def check_collision(space:'Space'):
 	"""
