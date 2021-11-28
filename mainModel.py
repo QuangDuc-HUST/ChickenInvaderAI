@@ -12,12 +12,16 @@ def main():
 	
 	game.initialize(height=10, width=7, num=14)
 
-	game.run(simple_move,isOnline=True)
+	# game.run(simple_move,isOnline=True)
 
 	# game.run(getinput,isOnline=True)
 
-	# game.run(local_search, isOnline=True)
+	game.run(local_search, isOnline=True)
 
+	# print(len(game.getStatesStatistic()))
+	
+	print(game.getActionsStatistic())
+	print(len(game.getActionsStatistic()))
 
 
 

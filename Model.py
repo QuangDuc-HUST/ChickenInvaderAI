@@ -378,7 +378,7 @@ class GameModel(object):
 	'''
 	main model of the game in order to : evaluate, environment, control the ship
 	'''
-	def __init__(self, isSave=False):
+	def __init__(self):
 		'''
 		Input:
 		isSave : boolean : save game or not.
@@ -392,7 +392,6 @@ class GameModel(object):
 		self._states = []
 		self._evaluate = None
 
-		self._isSave = isSave
 	
 	def initialize(self, height, width, num):
 		'''
@@ -402,7 +401,6 @@ class GameModel(object):
 		self._space = Space(height, width)
 		self._space.initialize(num)
 		self._evaluate = Evaluate()
-
 
 	def getSpace(self):
 		return self._space
@@ -426,6 +424,9 @@ class GameModel(object):
 			self._evaluate.settime()
 			self._evaluate.setstep(0)
 
+			
+			self._states.append(space.figure)
+			
 			print(space.figure)
 			print('-+-+'*20)
 
@@ -445,6 +446,8 @@ class GameModel(object):
 							space.figure[bullet.x, bullet.y ] -=8
 
 				temp = algorithm(space)
+				## Evaluate
+				self._actions.append(temp)
 				print(f'You choose: {temp}')
 				space.spaceship.move(temp)
 				self._evaluate.setstep(space.step)
@@ -465,6 +468,7 @@ class GameModel(object):
 					print('WINNING')
 					break
 				
+				self._states.append(space.figure)
 				space.show()
 				print('---'*10)
 
@@ -476,7 +480,12 @@ class GameModel(object):
 			## For offline
 			pass
 
-
+	
+	def getStatesStatistic(self):
+		return self._states
+	
+	def getActionsStatistic(self):
+		return self._actions
 
 	
 
