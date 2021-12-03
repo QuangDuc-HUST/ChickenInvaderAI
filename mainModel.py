@@ -1,5 +1,5 @@
 from Model import GameModel
-from LL import simple_move ## Sourcecode: LL
+from LL import online ## Sourcecode: LL
 from HD import local_search ## Sourcecode: HD
 
 ## Just be normal game, input
@@ -12,17 +12,20 @@ def main():
 	
 	game.initialize(height=10, width=7, num=14)
 
-	# game.run(simple_move,isOnline=True)
+	## One time
 
+	# game.run(online,isOnline=True)
 	# game.run(getinput,isOnline=True)
-
-	game.run(local_search, isOnline=True)
-
-	# print(len(game.getStatesStatistic()))
+	# game.run(local_search, isOnline=True)
 	
-	print(game.getActionsStatistic())
-	print(len(game.getActionsStatistic()))
+	# print(game.getActionsStatistic())
+	# print(len(game.getActionsStatistic()))
 
+	##  Evaluatate multiple time
+	eva = game.getEvaluate()
+
+	eva.evamultitime(local_search, True, 10)
+	eva.evamultitime(online, True, 10)
 
 
 

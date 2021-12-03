@@ -1,4 +1,3 @@
-# from algo import *
 import numpy as np
 import timeit
 
@@ -6,12 +5,16 @@ import timeit
 class NotExistSpace(Exception):
 	pass
 
+class GameNotIni(Exception):
+	pass
+
 
 class Evaluate(object):
 
-	def __init__(self):
+	def __init__(self, belong:'GameModel'):
 		self._step = 0
 		self._time = 0
+		self._belong = belong
 	
 	def settime(self):
 		'''
@@ -36,7 +39,34 @@ class Evaluate(object):
 		'''
 		return self._step
 
+	
+	def evamultitime(self, algorithm:'function', isOnline , times):
+		'''
+		Evaluate multiple times
+		times : int
+		lst_time: lst of time
+		lst_result: lst of results
+		lst_actions: lst of actions
+		'''
+		lst_time = []
+		lst_result = []
+		lst_steps = []
 
+		for _ in range(times):
+			self._belong.reinitialize()
+			result, time, steps, self._actions = self._belong.run(algorithm, isOnline)
+			lst_time.append(time)
+			lst_result.append(result)
+			lst_steps.append(steps)
+		
+		print('-' * 30)
+		print('Multitime Evaluation')
+		print(f'List of times: {lst_time}')
+		print(f'List of result: {lst_result}')
+		print(f'List of steps: {lst_steps}')
+		print(f'Mean time: {sum(lst_time) / len(lst_time) :.4f} seconds.')
+		print(f'Mean steps: {sum(lst_steps) / len(lst_steps) :.2f} steps.')
+		print('-' * 30)
 
 class Object(object):
 
@@ -69,7 +99,6 @@ class Object(object):
 
 	def move(self, dir=None):
 		pass
-
 
 
 class SpaceShip(Object):
@@ -131,6 +160,7 @@ class SpaceShip(Object):
 		self.belong.figure[self.x, self.y] +=2
 		self.belong.spaceship = self
 
+
 class Bullet(Object):
 
 	def __init__(self, x, y, belong: 'Space', label='Bullet'):
@@ -164,7 +194,6 @@ class Bullet(Object):
 		self.belong.figure[self.x, self.y ] +=7
 
 	
-
 class Egg(Object):
 
 	def __init__(self, x, y, belong: 'Space', label='Egg'):
@@ -203,7 +232,6 @@ class Egg(Object):
 		self.belong.figure[self.x, self.y ] +=4
 
 
-
 class Invader(Object):
 
 	def __init__(self, x, y, belong: 'Space', label="Invader"):
@@ -229,7 +257,6 @@ class Invader(Object):
 	def death(self):
 		"""
 		khong biet co can hay khong"""
-
 
 
 class Space(object):
@@ -277,27 +304,6 @@ class Space(object):
 		for i in range(len(cal)):
 			Invader(cal[i]%2, cal[i]//2, self)
 	
-	def initialize(self, num:int):
-		'''
-		initialize by itself like environment_initialize
-
-		Create a space including ship, invaders satisfies restriction
-		return space, ship, figure\\
-		height: height of space
-		width: 	width of space
-		num:	number of invaders
-
-		'''
-		self.num = num
-
-		ship_y = np.random.randint(self.width)
-
-		# ship_y = space.width //2  
-		# ship_y = 0
-		SpaceShip(x=self.height-1, y=ship_y, belong=self)
-
-		self.invaders_initialize()
-
 
 	def invader_actions(self):
 		'''
@@ -320,6 +326,26 @@ class Space(object):
 				for i in acting_possible_invaders:
 					i.lay()
 
+	def initialize(self, num:int):
+		'''
+		initialize by itself like environment_initialize
+
+		Create a space including ship, invaders satisfies restriction
+		return space, ship, figure\\
+		height: height of space
+		width: 	width of space
+		num:	number of invaders
+
+		'''
+		self.num = num
+
+		ship_y = np.random.randint(self.width)
+
+		# ship_y = space.width //2  
+		# ship_y = 0
+		SpaceShip(x=self.height-1, y=ship_y, belong=self)
+
+		self.invaders_initialize()
 
 	def update(self):
 		"""
@@ -390,7 +416,8 @@ class GameModel(object):
 		self._space = None
 		self._actions = []
 		self._states = []
-		self._evaluate = None
+		self._evaluate = Evaluate(self)
+		self._isinit = False
 
 	
 	def initialize(self, height, width, num):
@@ -398,33 +425,60 @@ class GameModel(object):
 		Initialize the space
 		evaluate
 		'''
+		## This part for evaluate
+		self._height = height
+		self._width = width
+		self._num = num
+		##
 		self._space = Space(height, width)
 		self._space.initialize(num)
-		self._evaluate = Evaluate()
+		self._isinit = True
+	
+	def reinitialize(self):
+		if not self._isinit:
+			raise GameNotIni("Don't forget to initialize game before reinit.")
+
+		self._space = Space(self._height, self._width)
+		self._space.initialize(self._num)
+
 
 	def getSpace(self):
 		return self._space
+
+	def getEvaluate(self):
+		return self._evaluate
+	
+	def restartEvaluate(self):
+		self._evaluate = Evaluate(self)
+		return self._evaluate
 	
 	def run(self, algorithm:'function', isOnline = True):
 		'''
 		algorithm: if isOnline = True, return one action of ship
 				   if isOffline = False, return list of actions
+		times: the number of evaluation
+
+		return: True if win else False
 
 		Example
 		def test(space):
 			`` space: Space``
-			return an action
+			return an action, time, steps, actions
+
 		'''
+		
+
 		if isOnline:
-			
 			space = self.getSpace()
+
 			if space is None:
 				raise NotExistSpace("Don't forget to initialize game.")
 
+
+			result = None		
 			self._evaluate.settime()
 			self._evaluate.setstep(0)
 
-			
 			self._states.append(space.figure)
 			
 			print(space.figure)
@@ -448,7 +502,9 @@ class GameModel(object):
 				temp = algorithm(space)
 				## Evaluate
 				self._actions.append(temp)
+
 				print(f'You choose: {temp}')
+
 				space.spaceship.move(temp)
 				self._evaluate.setstep(space.step)
 
@@ -457,6 +513,7 @@ class GameModel(object):
 				ret = False
 				for egg in space.eggs.copy():
 					if space.spaceship.collide(egg):
+						result = False
 						print('LOSING')
 						print(f'collision occurs at x= {space.spaceship.x} , y ={space.spaceship.y}')
 						ret = True
@@ -465,127 +522,30 @@ class GameModel(object):
 				space.invader_actions()
 
 				if space.check_winning():
+					result = True
 					print('WINNING')
 					break
 				
 				self._states.append(space.figure)
-				space.show()
+				## Display each step
+				# space.show()
+				
 				print('---'*10)
 
+			## Display
 
-			print(f'Running time: {self._evaluate.gettime()}')
-			print(f'Number of steps: {self._evaluate.getstep()}')
+			time = self._evaluate.gettime()
+			steps = self._evaluate.getstep()
 
-		else:
-			## For offline
-			pass
 
+			print(f'Running time: {time}')
+			print(f'Number of steps: {steps}')
+
+			return result, time, steps, self._actions
 	
 	def getStatesStatistic(self):
 		return self._states
 	
 	def getActionsStatistic(self):
 		return self._actions
-
-	
-
-
-# def invaders_initialize(space:'Space', num:int):
-# 	"""
-# 	Create <num> invaders satisfy restriction\\
-# 	num: number of invaders"""
-# 	cal = sorted(np.random.choice(range(space.width* 2), num, replace=False))
-# 	for i in range(len(cal)):
-# 		_ = Invader(cal[i]%2, cal[i]//2, space)
-
-
-# def environment_initialize(height:int, width:int, num:int):
-
-# 	"""
-# 	Create a space including ship, invaders satisfies restriction
-# 	return space, ship, figure\\
-# 		height: height of space
-# 		width: 	width of space
-# 		num:	number of invaders
-
-# 	"""
-# 	space = Space(height=height, width=width)
-# 	ship_y = np.random.randint(width)
-# 	# ship_y = space.width //2  
-# 	# ship_y = 0
-# 	_ = SpaceShip(x=height-1, y=ship_y, belong=space)
-# 	invaders_initialize(space=space, num=num)
-
-# 	return space, space.spaceship
-
-
-# def invader_actions(space: 'Space', step:'int'):
-# 	acting_possible_invaders = []
-# 	for invader in space.invaders:
-# 		x, y = invader.get_position()
-# 		if space.figure[x+ 1, y ] != 1:
-# 			acting_possible_invaders.append(invader)
-# 	if step % 3 == 0 : 
-# 		if len(acting_possible_invaders) > 3: 
-# 			laying_invader = sorted(np.random.choice(range(len(acting_possible_invaders)), 3, replace=False))
-# 			for i in laying_invader:
-# 				acting_possible_invaders[i].lay()
-	
-# 		else:
-# 			for i in acting_possible_invaders:
-# 				i.lay()
-
-
-
-	
-
-# def environment_changes(space:'Space', step:int):
-# 	"""
-# 	Action of all objects in space (excluding Agent)\\
-# 	Actions of bullets, eggs, invaders\\ 
-# 	Return None"""
-# 	for egg in space.eggs:
-# 		egg.drop()
-# 	for bullet in space.bullets:
-# 		bullet.move()
-# 	invader_actions(space=space, step = step)
-# 	#invader actions
-# 	# if step % 3 == 0:
-# 	# 	try:
-# 	# 		laying_invader = sorted(np.random.choice(range(len(space.invaders)), 3, replace=False))
-# 	# 		# if step % 3 == 0:
-# 	# 		for i in laying_invader:
-# 	# 			space.invaders[i].lay()
-				
-# 	# 	except:
-# 	# 		for invader in space.invaders:
-# 	# 			invader.lay()
-
-# def check_collision(space:'Space'):
-# 	"""
-# 	Check for collision\\
-# 	Remove object (excluding Agent) if any collision occurs\\
-# 	Chech for collision of Agent
-# 	Return True if Agent defeated\\
-# 		 else Fasle (then continue game)"""
-# 	for invader in space.invaders.copy():
-# 		for bullet in space.bullets.copy():
-# 			if bullet.collide(invader):
-# 				space.bullets.remove(bullet)
-# 				space.invaders.remove(invader)
-# 				space.figure[bullet.x, bullet.y ] -=8
-# 	for egg in space.eggs.copy():
-# 		if space.spaceship.collide(egg):
-# 			print(f'collision occurs at x= {space.spaceship.x} , y ={space.spaceship.y}')
-# 			return True
-# 	return False
-
-
-# def check_winning(space:'Space'):
-# 	"""
-# 	Check whether the Agent is winning
-# 	Return True if not reach terminal state
-# 		(Winning when number of invaders is 0)"""
-# 	return len(space.invaders) == 0
-
 
