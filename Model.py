@@ -5,9 +5,12 @@ import timeit
 class NotExistSpace(Exception):
 	pass
 
+
 class GameNotIni(Exception):
 	pass
 
+class NotEnoughActions(Exception):
+	pass
 
 class Evaluate(object):
 
@@ -67,6 +70,7 @@ class Evaluate(object):
 		print(f'Mean time: {sum(lst_time) / len(lst_time) :.4f} seconds.')
 		print(f'Mean steps: {sum(lst_steps) / len(lst_steps) :.2f} steps.')
 		print('-' * 30)
+
 
 class Object(object):
 
@@ -278,8 +282,10 @@ class Space(object):
 		self.height = height
 		self.width = width
 		self.num = 0
+		
 
-		self.step = 0
+
+		self.step = -1
 
 		self.spaceship = None
 		self.invaders = []
@@ -489,23 +495,33 @@ class GameModel(object):
 				space.step += 1
 				print(f'Step {space.step}: Do ', end='')
 
-				for bullet in space.bullets.copy():	
+				# for bullet in space.bullets.copy():	
+				for bullet in space.bullets:	
 					bullet.move()
 
-				for invader in space.invaders.copy():
-					for bullet in space.bullets.copy():
+				# for invader in space.invaders.copy():
+				# 	for bullet in space.bullets.copy():
+				# 		if bullet.collide(invader):
+				# 			space.bullets.remove(bullet)
+				# 			space.invaders.remove(invader)
+				# 			space.figure[bullet.x, bullet.y ] -=8
+
+				for invader in space.invaders:
+					for bullet in space.bullets:
 						if bullet.collide(invader):
 							space.bullets.remove(bullet)
 							space.invaders.remove(invader)
 							space.figure[bullet.x, bullet.y ] -=8
 
 				temp = algorithm(space)
-				## Evaluate
+
+				## For evaluate
 				self._actions.append(temp)
 
 				print(f'You choose: {temp}')
-
+				########################
 				space.spaceship.move(temp)
+				########################
 				self._evaluate.setstep(space.step)
 
 				for egg in space.eggs.copy():
@@ -519,17 +535,17 @@ class GameModel(object):
 						ret = True
 				if ret:
 					break
+
 				space.invader_actions()
 
 				if space.check_winning():
 					result = True
 					print('WINNING')
 					break
-				
 				self._states.append(space.figure)
+
 				## Display each step
-				# space.show()
-				
+				space.show()
 				print('---'*10)
 
 			## Display
@@ -539,7 +555,92 @@ class GameModel(object):
 
 
 			print(f'Running time: {time}')
-			print(f'Number of steps: {steps}')
+			print(f'Number of steps: {steps + 1}')
+
+			return result, time, steps, self._actions
+		
+		else:
+			##Offline
+			space = self.getSpace()
+
+			if space is None:
+				raise NotExistSpace("Don't forget to initialize game.")
+
+
+			result = None		
+			self._evaluate.settime()
+			self._evaluate.setstep(0)
+
+			self._states.append(space.figure)
+			
+			print(space.figure)
+			print('-+-+'*20)
+
+
+			temp = []
+			while True:
+				space.step += 1
+
+				for bullet in space.bullets:	
+					bullet.move()
+
+				for invader in space.invaders:
+					for bullet in space.bullets:
+						if bullet.collide(invader):
+							space.bullets.remove(bullet)
+							space.invaders.remove(invader)
+							space.figure[bullet.x, bullet.y ] -=8
+
+				## temp: list of actions
+				if not space.step % 3:
+					print(f'Step {space.step}: Do for the next 3 steps: ', end='')
+					temp = algorithm(space , 1)
+					if len(temp) != 3:
+						raise NotEnoughActions('3 Actions Please.')
+				
+				actionnow = temp[space.step % 3]
+
+				## For evaluate
+				self._actions.append(actionnow)
+
+				print(f'You choose: {actionnow}')
+				########################
+				space.spaceship.move(actionnow)
+				########################
+				self._evaluate.setstep(space.step)
+
+				for egg in space.eggs.copy():
+					egg.drop()
+				ret = False
+				for egg in space.eggs.copy():
+					if space.spaceship.collide(egg):
+						result = False
+						print('LOSING')
+						print(f'collision occurs at x= {space.spaceship.x} , y ={space.spaceship.y}')
+						ret = True
+				if ret:
+					break
+
+				space.invader_actions()
+
+				if space.check_winning():
+					result = True
+					print('WINNING')
+					break
+				self._states.append(space.figure)
+
+				## Display each step
+				space.show()
+				print('---'*10)
+
+			## Display
+
+			time = self._evaluate.gettime()
+			steps = self._evaluate.getstep()
+
+
+			print(f'Running time: {time}')
+			print(f'Number of steps: {steps + 1}')
 
 			return result, time, steps, self._actions
 	
