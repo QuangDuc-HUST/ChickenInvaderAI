@@ -10,7 +10,6 @@ def getinput(space):
 
 def main():
 	game = GameModel()
-	
 	game.initialize(height=10, width=7, num=14)
 
 	## One time
@@ -19,7 +18,6 @@ def main():
 	# game.run(getinput,isOnline=True)
 	# game.run(local_search, isOnline=True)
 	
-
 	game.run(testinputOffline, isOnline=False)
 	# game.run(miniMax, isOnline=False)
 
@@ -31,8 +29,6 @@ def main():
 	# eva = game.getEvaluate()
 	# eva.evamultitime(local_search, True, 10)
 	# eva.evamultitime(online, True, 10)
-
-
 
 if __name__ == '__main__':
 	main()
