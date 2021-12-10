@@ -1,10 +1,9 @@
 import numpy as np
 import timeit
-
+from QD import heuristic
 
 class NotExistSpace(Exception):
 	pass
-
 
 class GameNotIni(Exception):
 	pass
@@ -279,6 +278,7 @@ class Space(object):
 			figure: (type: np.array, shape(height, width)) show position of each object\\
 				in space by a matrix
 		"""
+
 		self.height = height
 		self.width = width
 		self.num = 0
@@ -353,30 +353,7 @@ class Space(object):
 
 		self.invaders_initialize()
 
-	def update(self):
-		"""
-		Like environment_change
-		Action of all objects in space (excluding Agent)\\
-		Actions of bullets, eggs, invaders\\ 
-		Return None"""
-		for egg in self.eggs:
-			egg.drop()
-		for bullet in self.bullets:
-			bullet.move()
-
-		self.invader_actions()
-		#invader actions
-		# if step % 3 == 0:
-		# 	try:
-		# 		laying_invader = sorted(np.random.choice(range(len(space.invaders)), 3, replace=False))
-		# 		# if step % 3 == 0:
-		# 		for i in laying_invader:
-		# 			space.invaders[i].lay()
-					
-		# 	except:
-		# 		for invader in space.invaders:
-		# 			invader.lay(
-
+	
 	def check_collision(self):
 		"""
 		Check for collision\\
@@ -390,6 +367,7 @@ class Space(object):
 				if bullet.collide(invader):
 					self.bullets.remove(bullet)
 					self.invaders.remove(invader)
+
 					self.figure[bullet.x, bullet.y ] -=8
 		for egg in self.eggs.copy():
 			if self.spaceship.collide(egg):
@@ -413,7 +391,6 @@ class GameModel(object):
 	def __init__(self):
 		'''
 		Input:
-		isSave : boolean : save game or not.
 		Variables
 		_space (SPACE)
 		_actions(list)
@@ -493,7 +470,7 @@ class GameModel(object):
 			
 			while True:
 				space.step += 1
-				print(f'Step {space.step}: Do ', end='')
+				print(f'Step {space.step + 1}: Do ', end='')
 
 				# for bullet in space.bullets.copy():	
 				for bullet in space.bullets:	
@@ -513,8 +490,8 @@ class GameModel(object):
 							space.invaders.remove(invader)
 							space.figure[bullet.x, bullet.y ] -=8
 
-				temp = algorithm(space)
 
+				temp = algorithm(space)
 				## For evaluate
 				self._actions.append(temp)
 
@@ -531,7 +508,7 @@ class GameModel(object):
 					if space.spaceship.collide(egg):
 						result = False
 						print('LOSING')
-						print(f'collision occurs at x= {space.spaceship.x} , y ={space.spaceship.y}')
+						print(f'Collision occurs at x = {space.spaceship.x} , y = {space.spaceship.y}')
 						ret = True
 				if ret:
 					break
@@ -542,8 +519,15 @@ class GameModel(object):
 					result = True
 					print('WINNING')
 					break
-				self._states.append(space.figure)
+				self._states.append(space.figure.copy())
 
+				################ Just for testing
+				print(f'Invaders: {[x.get_position() for x in space.invaders]}')
+				print(f'Spaceship: {space.spaceship.get_position()}')
+				print(f'Bullets: {[x.get_position() for x in space.bullets]}')
+				print(f'Eggs: {[x.get_position() for x in space.eggs]}')
+				# print(heuristic(space))
+				################
 				## Display each step
 				space.show()
 				print('---'*10)
@@ -571,7 +555,7 @@ class GameModel(object):
 			self._evaluate.settime()
 			self._evaluate.setstep(0)
 
-			self._states.append(space.figure)
+			self._states.append(space.figure.copy())
 			
 			print(space.figure)
 			print('-+-+'*20)
@@ -593,12 +577,19 @@ class GameModel(object):
 
 				## temp: list of actions
 				if not space.step % 3:
-					print(f'Step {space.step}: Do for the next 3 steps: ', end='')
+					# print(f'Step {space.step}: Do for the next 3 steps: ', end='')
+					print(f'Current heuristic: {heuristic(space)}')
 					temp = algorithm(space , 1)
-					if len(temp) != 3:
-						raise NotEnoughActions('3 Actions Please.')
+					actionnow = temp
+					# if len(temp) != 3:
+						# raise NotEnoughActions('3 Actions Please.')
+				elif not (space.step % 3 - 1):
+					temps = algorithm(space, 1)
+					print(temps)
 				
-				actionnow = temp[space.step % 3]
+				
+				if space.step % 3 :
+					actionnow = temps[space.step % 3 - 1]
 
 				## For evaluate
 				self._actions.append(actionnow)
@@ -627,6 +618,7 @@ class GameModel(object):
 					result = True
 					print('WINNING')
 					break
+
 				self._states.append(space.figure)
 
 				## Display each step
@@ -646,6 +638,7 @@ class GameModel(object):
 	
 	def getStatesStatistic(self):
 		return self._states
+	
 	
 	def getActionsStatistic(self):
 		return self._actions
