@@ -1,6 +1,7 @@
 import numpy as np
 import timeit
-from QD import heuristic
+import copy
+# from QD import heuristic
 
 class NotExistSpace(Exception):
 	pass
@@ -462,7 +463,7 @@ class GameModel(object):
 			self._evaluate.settime()
 			self._evaluate.setstep(0)
 
-			self._states.append(space.figure)
+			self._states.append(copy.deepcopy(space.figure))
 			
 			print(space.figure)
 			print('-+-+'*20)
@@ -519,7 +520,7 @@ class GameModel(object):
 					result = True
 					print('WINNING')
 					break
-				self._states.append(space.figure.copy())
+				self._states.append(copy.deepcopy(space.figure))
 
 				################ Just for testing
 				print(f'Invaders: {[x.get_position() for x in space.invaders]}')
@@ -555,7 +556,7 @@ class GameModel(object):
 			self._evaluate.settime()
 			self._evaluate.setstep(0)
 
-			self._states.append(space.figure.copy())
+			self._states.append(copy.deepcopy(space.figure))
 			
 			print(space.figure)
 			print('-+-+'*20)
@@ -578,7 +579,7 @@ class GameModel(object):
 				## temp: list of actions
 				if not space.step % 3:
 					# print(f'Step {space.step}: Do for the next 3 steps: ', end='')
-					print(f'Current heuristic: {heuristic(space)}')
+					# print(f'Current heuristic: {heuristic(space)}')
 					temp = algorithm(space , 1)
 					actionnow = temp
 					# if len(temp) != 3:
@@ -619,7 +620,7 @@ class GameModel(object):
 					print('WINNING')
 					break
 
-				self._states.append(space.figure)
+				self._states.append(copy.deepcopy(space.figure))
 
 				## Display each step
 				space.show()
