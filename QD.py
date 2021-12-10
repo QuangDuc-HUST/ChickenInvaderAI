@@ -23,7 +23,7 @@ def heuristic(space):
     bullets and chickens: (effectiveness of the bullets)
 
     :1 lazers : space.height 
-    :3 * distance or 0
+    :2 * space height or 0
 
     ship vs chickens:
     : 3* (space.height * 2 - Manhattan distance)
@@ -61,11 +61,14 @@ def heuristic(space):
     for bullet in lstbullets:
         ybullet = bullet[1]
         if ybullet in dic:
-            result += 3 * space.height
+            result += 2 * space.height
 
     for invader in lstinvaders:
         result += 3 * (space.height * 2 - Manhattan(invader, ship))
     return result
+
+
+
 
 def nextSpace(space, action):
 
@@ -86,8 +89,10 @@ def nextSpace(space, action):
     for egg in newspace.eggs.copy():
         egg.drop()
 
+    newspace.invader_actions()
+    # print(f'OLD SPACE: {space}')
+    # print(f'NEW SPACE: {newspace}')
     return newspace
-
 
 
 def ASearch(space):
@@ -98,8 +103,11 @@ def ASearch(space):
     MIN = -99 * space.height * 1.5
     ACTIONS = ['a', 'd' , 'w', 'remain']
     max = -float('inf')
-    maxaction = ['remain', 'remain']
+    maxactions = ['remain', 'remain']
 
+    maxSpace = None
+
+    ## For minimax
 
     for firstaction in ACTIONS:
         #######!!!!!!!!!!!########### Becareful: End game
@@ -116,17 +124,88 @@ def ASearch(space):
 
             if heu > max:
                 max = heu
-                maxaction= [firstaction, secondaction]
+                maxactions= [firstaction, secondaction]
+                maxSpace = secondspace
 
-    return maxaction
+    return maxactions , maxSpace
 
 
 def testAsearch(space, depth: int):
     if not space.step % 3:
         actions = input('First actions: ')
     else:
-        actions = ASearch(space)
+        actions, _ = ASearch(space)
     return actions
+
+
+
+def nextnextSpace(space, action):
+
+    newspace = nextSpace(space, action)
+
+    _ , newspace = ASearch(newspace)
+
+    return newspace
+
+
+## Minimax
+### Auxiliary function
+
+ACTIONS = ['remain', 'a', 'd', 'w']
+INF = float('inf')
+
+def terminal_test(state):
+    '''
+    state : 'Space'
+    return Boolean weather terminal or not
+    '''
+    if state.check_winning():
+        return True
+    
+    return False
+
+
+def utility(state):
+    return heuristic(state)
+
+
+def miniMax_desicion(space, depth:int, maxPlayer):
+    '''
+    return utility
+    '''
+    if depth == 0 or terminal_test(space):
+        return utility(space)
+    
+    if maxPlayer:
+        maxEval = -INF
+        for action in ACTIONS:
+            evaluate = miniMax_desicion(nextSpace(space, action), depth - 1, False)
+            maxEval = max(maxEval, evaluate)
+        return maxEval
+    
+    else:
+        minEval = INF
+        for action in ACTIONS:
+            evaluate = miniMax_desicion(nextSpace(space, action), depth - 1, True)
+            # print(f'EVALUATE : {evaluate} , action : {action}')
+            minEval = min(minEval, evaluate)
+        return minEval
+    
+
+def miniMax_seletion(space, depth:int):
+    '''
+    return action based on miniMax_desicion
+    '''
+    maxvalue = -INF
+    maxAction = None
+    for action in ACTIONS:
+        eva = miniMax_desicion(nextSpace(space, action), depth - 1, False)
+        # print(eva)
+        if eva > maxvalue:
+            maxvalue = eva
+            maxAction = action
+
+    return maxAction
 
 
 def miniMax(space, depth:int):
@@ -134,21 +213,63 @@ def miniMax(space, depth:int):
     Idea: fixed depth, in deterministic phrase: Using A* search but we consider it just one ply(2 actions).
     Warning: There might be a tranposition table in this state. 
     args:
+    space: Space
+    depth : depth
+    return action
+    '''
+    if not space.step % 3:
+        actions = miniMax_seletion(space, depth)
+        # print(f'ACTIONS AFTER MINIMAX: {actions}')
+    else:
+        actions, _ = ASearch(space)
+    return actions
 
+
+## Expectimax Pseudocode
+def successors(state):
+    '''
+    state: 'Space'
+    return list of (state, probability)
     '''
     pass
 
-## Minimax
 
-def miniMax_desicion(space, depth: int):
+        
+def value(space, depth, maxPlayer):
 
-    pass
+    if depth == 0 or terminal_test(space):
+        return utility(space)
+    
+    if maxPlayer:
+        maxEval = -INF
+        for action in ACTIONS:
+            evaluate = value(nextnextSpace(space, action), depth - 1, False)
+            maxEval = max(maxEval, evaluate)
+        return maxEval
+    
+    else:
+        v = 0
+        for suc, pro in successors(space):
+            v += value(suc, depth - 1, True) * pro
+    
+        return v
 
-def maxValue(space):
-    pass
+def expectimax(space, depth:int):
+    '''
+    return action based on value
+    '''
+    maxvalue = -INF
+    maxAction = None
+    for action in ACTIONS:
+        eva = value(nextSpace(space, action), depth - 1, False)
+        # print(eva)
+        if eva > maxvalue:
+            maxvalue = eva
+            maxAction = action
 
-def minValue(space):
-    pass
+    return maxAction
+
+
 
 def MCTS(space, depth: int):
     '''
