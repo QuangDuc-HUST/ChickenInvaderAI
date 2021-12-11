@@ -644,3 +644,4 @@ class GameModel(object):
 	def getActionsStatistic(self):
 		return self._actions
 
+	

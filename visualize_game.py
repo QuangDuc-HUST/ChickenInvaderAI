@@ -2,11 +2,7 @@
 
 import pygame
 import os
-import json
-from main import load_from_file
-# __LOAD DATA__
-file = 'a.json'
-data_dict = load_from_file(file)
+import pickle
 
 # __COLOR__
 White, Grey = (255, 255, 255), (100, 100, 100)
@@ -57,8 +53,8 @@ def draw_screen(step: str):
     step_label = pygame.font.SysFont("comicsans", 20).render(
         f"Step: {step}", 1, (255, 255, 255))
     screen.blit(step_label, (0, screen_height-step_label.get_height()))
-    if int(step) > 0:
-        data = json.loads(data_dict[step])  # type here is a lict of int
+    if int(step) >= 0:
+        data = list_data[int(step)]  # type here is a lict of int
         for y in range(len(data)):
             for x in range(len(data[y])):
                 if data[y][x] == 1:
@@ -108,9 +104,13 @@ def display():
                         step -= 1
                 # Press RIGHT_ARROW to see next step
                 if event.key == pygame.K_RIGHT:
-                    if step < len(data_dict.keys()):
+                    if step < len(list_data)-1:
                         step += 1
     pygame.quit()
 
 
+# __LOAD DATA__
+file_name = 'data'
+with open(file_name, 'rb') as f:
+    list_data = pickle.load(f)
 display()
