@@ -1,34 +1,46 @@
 from Model import GameModel
-from LL import online ## Sourcecode: LL
-from HD import local_search ## Sourcecode: HD
-from QD import miniMax, testinputOffline  ## Sourcecode: QD
+from LL import online  # Sourcecode: LL
+from HD import local_search  # Sourcecode: HD
+from QD import miniMax, testinputOffline  # Sourcecode: QD
+import pickle
 
-## Just be normal game, input
+# Just be normal game, input
+
+
 def getinput(space):
-	return input('Your next move is: ')
+    return input('Your next move is: ')
+
+
+def savedata(game, filename):
+    with open(filename, 'wb') as f:
+        pickle.dump(game.getStatesStatistic(), f)
 
 
 def main():
-	game = GameModel()
-	game.initialize(height=10, width=7, num=14)
+    game = GameModel()
+    game.initialize(height=10, width=7, num=14)
 
-	## One time
+    # One time
 
-	# game.run(online,isOnline=True)
-	# game.run(getinput,isOnline=True)
-	# game.run(local_search, isOnline=True)
-	
-	game.run(testinputOffline, isOnline=False)
-	# game.run(miniMax, isOnline=False)
+    # game.run(online, isOnline=True)
+    # game.run(getinput,isOnline=True)
+    game.run(local_search, isOnline=True)
 
-	# print(game.getActionsStatistic())
-	# print(len(game.getActionsStatistic()))
+    # game.run(testinputOffline, isOnline=False)
+    # game.run(miniMax, isOnline=False)
 
-	##  Evaluatate multiple time
+    # print(game.getActionsStatistic())
+    # print(len(game.getActionsStatistic()))
 
-	# eva = game.getEvaluate()
-	# eva.evamultitime(local_search, True, 10)
-	# eva.evamultitime(online, True, 10)
+    # Evaluatate multiple time
+
+    # eva = game.getEvaluate()
+    # eva.evamultitime(local_search, True, 10)
+    # eva.evamultitime(online, True, 10)
+
+    # __SAVE DATA__
+    savedata(game, 'data')
+
 
 if __name__ == '__main__':
-	main()
+    main()
