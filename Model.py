@@ -1,7 +1,6 @@
 import numpy as np
 import timeit
 import copy
-# from QD import heuristic
 
 class NotExistSpace(Exception):
 	pass
@@ -315,7 +314,6 @@ class Space(object):
 	def invader_actions(self):
 		'''
 		Control actions of the invaders
-		
 		'''
 		acting_possible_invaders = []
 
@@ -565,7 +563,7 @@ class GameModel(object):
 			temp = []
 			while True:
 				space.step += 1
-
+				print(f'Current step: {space.step}')
 				for bullet in space.bullets:	
 					bullet.move()
 
@@ -580,13 +578,14 @@ class GameModel(object):
 				if not space.step % 3:
 					# print(f'Step {space.step}: Do for the next 3 steps: ', end='')
 					# print(f'Current heuristic: {heuristic(space)}')
-					temp = algorithm(space , 1)
+					temp = algorithm(space , 4)
 					actionnow = temp
+					print(f'{algorithm.__name__} do {actionnow}')
 					# if len(temp) != 3:
 						# raise NotEnoughActions('3 Actions Please.')
 				elif not (space.step % 3 - 1):
-					temps = algorithm(space, 1)
-					print(temps)
+					temps = algorithm(space, 4)
+					print(f'A search: {temps}')
 				
 				
 				if space.step % 3 :
@@ -603,6 +602,7 @@ class GameModel(object):
 
 				for egg in space.eggs.copy():
 					egg.drop()
+
 				ret = False
 				for egg in space.eggs.copy():
 					if space.spaceship.collide(egg):

@@ -1,5 +1,6 @@
 # from Model import Space
 import copy
+import random
 
 def Manhattan(x, y):
     '''
@@ -31,6 +32,8 @@ def heuristic(space):
     args:
     return int value 
     '''
+    if space is None:
+        return -INF
 
     ship = space.spaceship.get_position()
     lstbullets = [x.get_position() for x in space.bullets]
@@ -56,7 +59,7 @@ def heuristic(space):
         elif egg[0] == space.height - 1:
             continue
         else:
-            result += (-space.height * 2 + currentdistant)
+            result += 0.9 *(-space.height * 2 + currentdistant)
     
     for bullet in lstbullets:
         ybullet = bullet[1]
@@ -64,16 +67,18 @@ def heuristic(space):
             result += 2 * space.height
 
     for invader in lstinvaders:
-        result += 3 * (space.height * 2 - Manhattan(invader, ship))
+        result +=   2.5 * (space.width - abs(invader[1] - ship[1]) )
     return result
 
 
 
 
-def nextSpace(space, action):
+def nextSpace(space, action, isAction = True, improveStep = False):
 
     newspace = copy.deepcopy(space)
-
+    if improveStep:
+        newspace.step += 1
+    # print(f'Next space step: {newspace.step}')
     for bullet in newspace.bullets:
         bullet.move()
 
@@ -83,8 +88,8 @@ def nextSpace(space, action):
                 newspace.bullets.remove(bullet)
                 newspace.invaders.remove(invader)
                 newspace.figure[bullet.x, bullet.y ] -=8
-    
-    newspace.spaceship.move(action)
+    if isAction:
+        newspace.spaceship.move(action)
 
     for egg in newspace.eggs.copy():
         egg.drop()
@@ -94,8 +99,41 @@ def nextSpace(space, action):
     # print(f'NEW SPACE: {newspace}')
     return newspace
 
+def nextSpacever2(space,action):
+    '''
+    Just environment and actions
+    '''
+    newspace = copy.deepcopy(space)
+    if not newspace.step % 3:
+        print('You are the right phrase.')
+    for bullet in newspace.bullets:
+        bullet.move()
 
-def ASearch(space):
+    for invader in newspace.invaders:
+        for bullet in newspace.bullets:
+            if bullet.collide(invader):
+                newspace.bullets.remove(bullet)
+                newspace.invaders.remove(invader)
+                newspace.figure[bullet.x, bullet.y ] -=8
+
+    newspace.spaceship.move(action)
+
+    for egg in newspace.eggs.copy():
+        egg.drop()
+
+    return newspace
+
+def nextSpacever3(space):
+    '''
+    Just invaders
+    '''
+    newspace = copy.deepcopy(space)
+    newspace.invader_actions()
+    return newspace
+
+
+
+def ASearch(space, isNext = True):
     '''
     Depth-limited search , fixed = 2
     return: lst of 2 actions
@@ -105,20 +143,22 @@ def ASearch(space):
     max = -float('inf')
     maxactions = ['remain', 'remain']
 
-    maxSpace = None
+    ## Testing
+    maxSpace = nextSpace(space, ACTIONS[0], True, True)
 
     ## For minimax
 
     for firstaction in ACTIONS:
         #######!!!!!!!!!!!########### Becareful: End game
-        firstspace = nextSpace(space, firstaction)
-        # print('First space')
-        # print(f'Done action: {firstaction}')
-        # print(firstspace.figure)
+        if isNext:
+            firstspace = nextSpace(space, firstaction)
+        else:
+            firstspace = nextSpace(space, firstaction, True, True)
+        # print(f'First space step: {firstspace.step}')
         if heuristic(firstspace) < MIN:
             continue
         for secondaction in ACTIONS:
-            secondspace = nextSpace(firstspace, secondaction)
+            secondspace = nextSpace(firstspace, secondaction, True, True)
             heu = heuristic(secondspace)
             # print(f'{firstaction}, {secondaction}, {heu}')
 
@@ -141,9 +181,9 @@ def testAsearch(space, depth: int):
 
 def nextnextSpace(space, action):
 
-    newspace = nextSpace(space, action)
+    newspace = nextSpace(space, action, True, True)
 
-    _ , newspace = ASearch(newspace)
+    _ , newspace = ASearch(newspace, False)
 
     return newspace
 
@@ -154,16 +194,17 @@ def nextnextSpace(space, action):
 ACTIONS = ['remain', 'a', 'd', 'w']
 INF = float('inf')
 
-def terminal_test(state):
+def terminal_test(space):
     '''
     state : 'Space'
     return Boolean weather terminal or not
     '''
-    if state.check_winning():
-        return True
-    
-    return False
+    for egg in space.eggs.copy():
+        if space.spaceship.collide(egg):
+            return True
 
+    return space.check_winning()
+    
 
 def utility(state):
     return heuristic(state)
@@ -226,12 +267,18 @@ def miniMax(space, depth:int):
 
 
 ## Expectimax Pseudocode
-def successors(state):
+def successors(space):
     '''
     state: 'Space'
     return list of (state, probability)
+    Demo: Just 2 leaf
     '''
-    pass
+    a = random.random()
+    newspace1 = nextSpacever3(space)
+    _, newspace1 = ASearch(newspace1, False)
+    newspace2 = nextSpacever3(space)
+    _,newspace2 = ASearch(newspace2, False)
+    return [[newspace1, a ], [newspace2, 1 - a]]
 
 
         
@@ -243,7 +290,7 @@ def value(space, depth, maxPlayer):
     if maxPlayer:
         maxEval = -INF
         for action in ACTIONS:
-            evaluate = value(nextnextSpace(space, action), depth - 1, False)
+            evaluate = value(nextSpacever2(space, action), depth - 1, False)
             maxEval = max(maxEval, evaluate)
         return maxEval
     
@@ -251,7 +298,7 @@ def value(space, depth, maxPlayer):
         v = 0
         for suc, pro in successors(space):
             v += value(suc, depth - 1, True) * pro
-    
+        # print(v)
         return v
 
 def expectimax(space, depth:int):
@@ -261,14 +308,23 @@ def expectimax(space, depth:int):
     maxvalue = -INF
     maxAction = None
     for action in ACTIONS:
-        eva = value(nextSpace(space, action), depth - 1, False)
-        # print(eva)
+        print('Start explore ' + action)
+        eva = value(nextSpacever2(space, action), depth - 1, False)
+        print(f'EVA: {eva} in action {action}')
         if eva > maxvalue:
             maxvalue = eva
             maxAction = action
 
     return maxAction
 
+
+def expectimax_input(space, depth: int):
+    if not space.step % 3:
+        actions = expectimax(space, depth)
+    else:
+        actions , _ = ASearch(space)
+    
+    return actions
 
 
 def MCTS(space, depth: int):
