@@ -516,6 +516,7 @@ class GameModel(object):
 
 				if space.check_winning():
 					result = True
+					self._states.append(copy.deepcopy(space.figure))
 					print('WINNING')
 					break
 				self._states.append(copy.deepcopy(space.figure))
@@ -618,6 +619,7 @@ class GameModel(object):
 				if space.check_winning():
 					result = True
 					print('WINNING')
+					self._states.append(copy.deepcopy(space.figure))
 					break
 
 				self._states.append(copy.deepcopy(space.figure))
