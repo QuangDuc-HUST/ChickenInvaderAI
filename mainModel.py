@@ -14,7 +14,7 @@ def main():
 	## One time
 	
 	# game.run(online,isOnline=True)
-	game.run(getinput,isOnline=True)
+	# game.run(getinput,isOnline=True)
 	# game.run(local_search, isOnline=True)
 	
 
@@ -27,8 +27,8 @@ def main():
 
 	##  Evaluatate multiple time
 
-	# eva = game.getEvaluate()
-	# eva.evamultitime(local_search, True, 10)
+	eva = game.getEvaluate()
+	eva.evamultitime(local_search, True, 100)
 	# eva.evamultitime(online, True, 10)
 
 if __name__ == '__main__':
