@@ -29,8 +29,6 @@ img_laser = pygame.transform.scale(pygame.image.load(
     os.path.join("assets", "pixel_laser_red.png")), (unit, unit))
 
 # __DRAW OBJECT FUNCTIONS__
-
-
 def draw_ship(x, y):
     screen.blit(img_ship, (x*unit, y*unit))
 
@@ -110,7 +108,7 @@ def display():
 
 
 # __LOAD DATA__
-file_name = 'data'
-with open(file_name, 'rb') as f:
+file_name = 'Test1'
+with open(f'data\{file_name}.pickle', 'rb') as f:
     list_data = pickle.load(f)
 display()

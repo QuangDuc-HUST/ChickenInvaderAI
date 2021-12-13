@@ -1,15 +1,9 @@
+from exception import *
 import numpy as np
 import timeit
 import copy
+import pickle
 
-class NotExistSpace(Exception):
-	pass
-
-class GameNotIni(Exception):
-	pass
-
-class NotEnoughActions(Exception):
-	pass
 
 class Evaluate(object):
 
@@ -50,6 +44,8 @@ class Evaluate(object):
 		lst_result: lst of results
 		lst_actions: lst of actions
 		'''
+		if self._belong._isrun:
+			raise GameAlreadyRun()
 		lst_time = []
 		lst_result = []
 		lst_steps = []
@@ -415,13 +411,16 @@ class GameModel(object):
 		self._space = Space(height, width)
 		self._space.initialize(num)
 		self._isinit = True
-	
+		self._isrun = False
+
+
 	def reinitialize(self):
 		if not self._isinit:
 			raise GameNotIni("Don't forget to initialize game before reinit.")
-
+		
 		self._space = Space(self._height, self._width)
 		self._space.initialize(self._num)
+		self._isrun = False
 
 
 	def getSpace(self):
@@ -448,6 +447,10 @@ class GameModel(object):
 			return an action, time, steps, actions
 
 		'''
+		if not self._isrun:
+			self._isrun = True
+		else:
+			raise GameAlreadyRun('Current game has already by another algorithm.')
 		
 
 		if isOnline:
@@ -640,10 +643,22 @@ class GameModel(object):
 			return result, time, steps, self._actions
 	
 	def getStatesStatistic(self):
+		if not len(self._states):
+			raise GameNotRun('Game does not run yet.') 
 		return self._states
 	
 	
 	def getActionsStatistic(self):
+		if not len(self._actions):
+			raise GameNotRun('Game does not run yet.')
 		return self._actions
 
-	
+	def saveData(self, filename):
+		'''
+		save data in pickle file in data
+		name = filename + currenttime 
+		'''
+		with open(f'data\\{filename}.pickle', 'wb') as f:
+			pickle.dump(self.getStatesStatistic(), f)
+
+		print(f'Your data "{filename}.pickle" has saved successfully in data folder')
