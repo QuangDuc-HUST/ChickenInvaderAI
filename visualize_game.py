@@ -109,7 +109,7 @@ def display(list_data):
 
 if __name__ == '__main__':
 
-    file_name = 'Tes1'
+    file_name = 'Test1'
     with open(f'data\{file_name}.pickle', 'rb') as f:
         list_data = pickle.load(f)
 
