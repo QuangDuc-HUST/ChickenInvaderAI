@@ -1,7 +1,8 @@
 from Model import GameModel
 from LL import online  # Sourcecode: LL
 from HD import local_search  # Sourcecode: HD
-from QD import miniMax, testinputOffline  # Sourcecode: QD
+from QD import miniMax ,testAsearch  # Sourcecode: QD
+
 
 # Just be normal game, input
 def getinput(space):
@@ -14,14 +15,17 @@ def main():
 
     ### One time
 
-    game.run(local_search, isOnline=True)
-    # game.run(online, isOnline=True)
-    # game.run(getinput,isOnline=True)
+    game.run(local_search)
+    # game.run(online)
+    # game.run(getinput)
     
-
     # print(game.getStatesStatistic())
-    # game.run(testinputOffline, isOnline=False)
-    # game.run(miniMax, isOnline=False)
+    # print(game.getActionsStatistic())
+
+
+    # game.run(testinputOffline)
+    # game.run(testAsearch)
+    # game.run(miniMax)
 
     # print(game.getActionsStatistic())
     # print(len(game.getActionsStatistic()))
@@ -30,11 +34,13 @@ def main():
     # __SAVE DATA__
     game.saveData('Test1')
 
-
     ## Evaluatate multiple time
 
     # eva = game.getEvaluate()
-    # eva.evamultitime(local_search, True, 10)
+
+    # eva.evamultitime(local_search, times= 10)
+
+    # eva.saveGame('Testmulti')
     # eva.evamultitime(online, True, 10)
 
    

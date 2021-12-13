@@ -1,5 +1,3 @@
-# RUN game.py TO GET a.json BEFORE RUN THIS FILE
-
 import pygame
 import os
 import pickle
@@ -46,13 +44,13 @@ def draw_chicken(x, y):
 
 
 # __DRAW SCREEN FUNCTION__
-def draw_screen(step: str):
+def draw_screen(step: str, list_data):
     screen.blit(background, (0, 0))
     step_label = pygame.font.SysFont("comicsans", 20).render(
         f"Step: {step}", 1, (255, 255, 255))
     screen.blit(step_label, (0, screen_height-step_label.get_height()))
     if int(step) >= 0:
-        data = list_data[int(step)]  # type here is a lict of int
+        data = list_data[int(step)]  # type here is a list of int
         for y in range(len(data)):
             for x in range(len(data[y])):
                 if data[y][x] == 1:
@@ -82,7 +80,7 @@ def draw_screen(step: str):
 # __DISPLAY FUNCTION__
 
 
-def display():
+def display(list_data):
     pygame.init()
     pygame.font.init()
     step = 0
@@ -91,7 +89,7 @@ def display():
     clock = pygame.time.Clock()
     while run:
         clock.tick(FPS)
-        draw_screen(str(step))
+        draw_screen(str(step), list_data)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -108,7 +106,12 @@ def display():
 
 
 # __LOAD DATA__
-file_name = 'Test1'
-with open(f'data\{file_name}.pickle', 'rb') as f:
-    list_data = pickle.load(f)
-display()
+
+if __name__ == '__main__':
+
+    file_name = 'Tes1'
+    with open(f'data\{file_name}.pickle', 'rb') as f:
+        list_data = pickle.load(f)
+
+    print(list_data)
+    display(list_data)

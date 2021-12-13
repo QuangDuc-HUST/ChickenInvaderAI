@@ -11,7 +11,8 @@ class Evaluate(object):
 		self._step = 0
 		self._time = 0
 		self._belong = belong
-	
+		self._states = []
+
 	def settime(self):
 		'''
 		Set time
@@ -35,14 +36,15 @@ class Evaluate(object):
 		'''
 		return self._step
 
-	
-	def evamultitime(self, algorithm:'function', isOnline , times):
+
+	def evamultitime(self, algorithm:'function' , times):
 		'''
 		Evaluate multiple times
 		times : int
 		lst_time: lst of time
 		lst_result: lst of results
 		lst_actions: lst of actions
+		lst_states: lst of states
 		'''
 		if self._belong._isrun:
 			raise GameAlreadyRun()
@@ -52,19 +54,29 @@ class Evaluate(object):
 
 		for _ in range(times):
 			self._belong.reinitialize()
-			result, time, steps, self._actions = self._belong.run(algorithm, isOnline)
+			result, time, steps, _ , state = self._belong.run(algorithm)
 			lst_time.append(time)
 			lst_result.append(result)
 			lst_steps.append(steps)
-		
+			self._states.append(copy.deepcopy(state))
+
 		print('-' * 30)
 		print('Multitime Evaluation')
 		print(f'List of times: {lst_time}')
 		print(f'List of result: {lst_result}')
-		print(f'List of steps: {lst_steps}')
+		print(f'List of steps: {[(i, lst_steps[i]) for i in range(len(lst_steps))]}')
 		print(f'Mean time: {sum(lst_time) / len(lst_time) :.4f} seconds.')
 		print(f'Mean steps: {sum(lst_steps) / len(lst_steps) :.2f} steps.')
 		print('-' * 30)
+
+		return lst_time, lst_steps, self._states
+
+	
+	def saveGame(self, filename):
+		with open(f'data\\{filename}_multi.pickle', 'wb') as f:
+			pickle.dump(self._states, f)
+
+		print(f'Your data "{filename}_multi.pickle" has saved successfully in data folder')
 
 
 class Object(object):
@@ -417,7 +429,9 @@ class GameModel(object):
 	def reinitialize(self):
 		if not self._isinit:
 			raise GameNotIni("Don't forget to initialize game before reinit.")
-		
+			
+		self._actions = []
+		self._states = []
 		self._space = Space(self._height, self._width)
 		self._space.initialize(self._num)
 		self._isrun = False
@@ -433,10 +447,8 @@ class GameModel(object):
 		self._evaluate = Evaluate(self)
 		return self._evaluate
 	
-	def run(self, algorithm:'function', isOnline = True):
+	def run(self, algorithm:'function'):
 		'''
-		algorithm: if isOnline = True, return one action of ship
-				   if isOffline = False, return list of actions
 		times: the number of evaluation
 
 		return: True if win else False
@@ -453,195 +465,95 @@ class GameModel(object):
 			raise GameAlreadyRun('Current game has already by another algorithm.')
 		
 
-		if isOnline:
-			space = self.getSpace()
+		space = self.getSpace()
 
-			if space is None:
-				raise NotExistSpace("Don't forget to initialize game.")
-
-
-			result = None		
-			self._evaluate.settime()
-			self._evaluate.setstep(0)
-
-			self._states.append(copy.deepcopy(space.figure))
-			
-			print(space.figure)
-			print('-+-+'*20)
-
-			
-			while True:
-				space.step += 1
-				print(f'Step {space.step + 1}: Do ', end='')
-
-				# for bullet in space.bullets.copy():	
-				for bullet in space.bullets:	
-					bullet.move()
-
-				# for invader in space.invaders.copy():
-				# 	for bullet in space.bullets.copy():
-				# 		if bullet.collide(invader):
-				# 			space.bullets.remove(bullet)
-				# 			space.invaders.remove(invader)
-				# 			space.figure[bullet.x, bullet.y ] -=8
-
-				for invader in space.invaders:
-					for bullet in space.bullets:
-						if bullet.collide(invader):
-							space.bullets.remove(bullet)
-							space.invaders.remove(invader)
-							space.figure[bullet.x, bullet.y ] -=8
+		if space is None:
+			raise NotExistSpace("Don't forget to initialize game.")
 
 
-				temp = algorithm(space)
-				## For evaluate
-				self._actions.append(temp)
 
-				print(f'You choose: {temp}')
-				########################
-				space.spaceship.move(temp)
-				########################
-				self._evaluate.setstep(space.step)
+		result = None		
+		self._evaluate.settime()
+		self._evaluate.setstep(0)
 
-				for egg in space.eggs.copy():
-					egg.drop()
-				ret = False
-				for egg in space.eggs.copy():
-					if space.spaceship.collide(egg):
-						result = False
-						print('LOSING')
-						print(f'Collision occurs at x = {space.spaceship.x} , y = {space.spaceship.y}')
-						ret = True
-				if ret:
-					break
-
-				space.invader_actions()
-
-				if space.check_winning():
-					result = True
-					self._states.append(copy.deepcopy(space.figure))
-					print('WINNING')
-					break
-				self._states.append(copy.deepcopy(space.figure))
-
-				################ Just for testing
-				print(f'Invaders: {[x.get_position() for x in space.invaders]}')
-				print(f'Spaceship: {space.spaceship.get_position()}')
-				print(f'Bullets: {[x.get_position() for x in space.bullets]}')
-				print(f'Eggs: {[x.get_position() for x in space.eggs]}')
-				# print(heuristic(space))
-				################
-				## Display each step
-				space.show()
-				print('---'*10)
-
-			## Display
-
-			time = self._evaluate.gettime()
-			steps = self._evaluate.getstep()
-
-
-			print(f'Running time: {time}')
-			print(f'Number of steps: {steps + 1}')
-
-			return result, time, steps, self._actions
+		self._states.append(copy.deepcopy(space.figure))
 		
-		else:
-			##Offline
-			space = self.getSpace()
+		print(space.figure)
+		print('-+-+'*20)
 
-			if space is None:
-				raise NotExistSpace("Don't forget to initialize game.")
+		## Start game
+
+		while True:
+			space.step += 1
+			print(f'Step {space.step + 1}: Do ', end='')
+
+			for bullet in space.bullets:	
+				bullet.move()
+
+			for invader in space.invaders:
+				for bullet in space.bullets:
+					if bullet.collide(invader):
+						space.bullets.remove(bullet)
+						space.invaders.remove(invader)
+						space.figure[bullet.x, bullet.y ] -=8
 
 
-			result = None		
-			self._evaluate.settime()
-			self._evaluate.setstep(0)
+			temp = algorithm(space)
+			## For evaluate
+			self._actions.append(temp)
+
+			print(f'You choose: {temp}')
+			########################
+			space.spaceship.move(temp)
+			########################
+			self._evaluate.setstep(space.step)
+
+			for egg in space.eggs.copy():
+				egg.drop()
+			ret = False
+			for egg in space.eggs.copy():
+				if space.spaceship.collide(egg):
+					result = False
+					print('LOSING')
+					print(f'Collision occurs at x = {space.spaceship.x} , y = {space.spaceship.y}')
+					ret = True
+			if ret:
+				break
+
+			space.invader_actions()
+
+			if space.check_winning():
+				result = True
+				print('WINNING')
+				break
 
 			self._states.append(copy.deepcopy(space.figure))
-			
-			print(space.figure)
-			print('-+-+'*20)
+
+			################ Just for testing
+			print(f'Invaders: {[x.get_position() for x in space.invaders]}')
+			print(f'Spaceship: {space.spaceship.get_position()}')
+			print(f'Bullets: {[x.get_position() for x in space.bullets]}')
+			print(f'Eggs: {[x.get_position() for x in space.eggs]}')
+			# print(heuristic(space))
+			################
+			## Display each step
+			space.show()
+			print('---'*10)
 
 
-			temp = []
-			while True:
-				space.step += 1
-				print(f'Current step: {space.step}')
-				for bullet in space.bullets:	
-					bullet.move()
+		self._states.append(copy.deepcopy(space.figure))
 
-				for invader in space.invaders:
-					for bullet in space.bullets:
-						if bullet.collide(invader):
-							space.bullets.remove(bullet)
-							space.invaders.remove(invader)
-							space.figure[bullet.x, bullet.y ] -=8
+		## Display
 
-				## temp: list of actions
-				if not space.step % 3:
-					# print(f'Step {space.step}: Do for the next 3 steps: ', end='')
-					# print(f'Current heuristic: {heuristic(space)}')
-					temp = algorithm(space , 4)
-					actionnow = temp
-					print(f'{algorithm.__name__} do {actionnow}')
-					# if len(temp) != 3:
-						# raise NotEnoughActions('3 Actions Please.')
-				elif not (space.step % 3 - 1):
-					temps = algorithm(space, 4)
-					print(f'A search: {temps}')
-				
-				
-				if space.step % 3 :
-					actionnow = temps[space.step % 3 - 1]
-
-				## For evaluate
-				self._actions.append(actionnow)
-
-				print(f'You choose: {actionnow}')
-				########################
-				space.spaceship.move(actionnow)
-				########################
-				self._evaluate.setstep(space.step)
-
-				for egg in space.eggs.copy():
-					egg.drop()
-
-				ret = False
-				for egg in space.eggs.copy():
-					if space.spaceship.collide(egg):
-						result = False
-						print('LOSING')
-						print(f'collision occurs at x= {space.spaceship.x} , y ={space.spaceship.y}')
-						ret = True
-				if ret:
-					break
-
-				space.invader_actions()
-
-				if space.check_winning():
-					result = True
-					print('WINNING')
-					self._states.append(copy.deepcopy(space.figure))
-					break
-
-				self._states.append(copy.deepcopy(space.figure))
-
-				## Display each step
-				space.show()
-				print('---'*10)
-
-			## Display
-
-			time = self._evaluate.gettime()
-			steps = self._evaluate.getstep()
+		time = self._evaluate.gettime()
+		steps = self._evaluate.getstep()
 
 
-			print(f'Running time: {time}')
-			print(f'Number of steps: {steps + 1}')
+		print(f'Running time: {time}')
+		print(f'Number of steps: {steps + 1}')
 
-			return result, time, steps, self._actions
-	
+		return result, time, steps, self._actions, self._states
+		
 	def getStatesStatistic(self):
 		if not len(self._states):
 			raise GameNotRun('Game does not run yet.') 

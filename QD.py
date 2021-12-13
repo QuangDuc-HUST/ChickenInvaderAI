@@ -71,8 +71,6 @@ def heuristic(space):
     return result
 
 
-
-
 def nextSpace(space, action, isAction = True, improveStep = False):
 
     newspace = copy.deepcopy(space)
@@ -130,7 +128,6 @@ def nextSpacever3(space):
     newspace = copy.deepcopy(space)
     newspace.invader_actions()
     return newspace
-
 
 
 def ASearch(space, isNext = True):
@@ -334,12 +331,6 @@ def MCTS(space, depth: int):
     '''
 
     pass
-
-def testinputOffline(space, depth:int):
-    actions = input('Plz: ').split()
-    return actions
-
-
 
 
 
