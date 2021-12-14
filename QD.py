@@ -32,7 +32,7 @@ def nextSpace(space, action, isAgent):
     # print(f'NEW SPACE: {newspace}')
     return newspace
 
-MAX_DEPTH = 3
+MAX_DEPTH = 4
 MAX_RANDOM = 3
 ACTIONS = ['w', 'a', 'd', 'remain']
 
@@ -185,9 +185,14 @@ def expectedValue(space, depth):
     
     expected_score = 0
 
-    for _ in range(MAX_RANDOM):
+    if space.step % 3:
+        rd =  1
+    else:
+        rd  = MAX_RANDOM
+
+    for _ in range(rd):
         score, actions = maxValue(nextSpace(space, 'remain', False), depth + 1)
-        expected_score += score / MAX_RANDOM
+        expected_score += score / rd
         # print(MAX_RANDOM)
 
 
