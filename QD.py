@@ -1,7 +1,7 @@
-# from Model import Space
 import copy
 import random
 
+## Heuristic function
 def Manhattan(x, y):
     '''
     x: (x1,x2)
@@ -9,7 +9,6 @@ def Manhattan(x, y):
     return Manhattan distance of two points
     '''
     return abs(x[0] - y[0]) + abs(x[1] - y[1])
-
 
 def heuristic(space):
     '''
@@ -70,12 +69,10 @@ def heuristic(space):
         result +=   2.5 * (space.width - abs(invader[1] - ship[1]) )
     return result
 
-
-def nextSpace(space, action, isAction = True, improveStep = False):
+def nextSpace(space, action):
 
     newspace = copy.deepcopy(space)
-    if improveStep:
-        newspace.step += 1
+
     # print(f'Next space step: {newspace.step}')
     for bullet in newspace.bullets:
         bullet.move()
@@ -86,8 +83,8 @@ def nextSpace(space, action, isAction = True, improveStep = False):
                 newspace.bullets.remove(bullet)
                 newspace.invaders.remove(invader)
                 newspace.figure[bullet.x, bullet.y ] -=8
-    if isAction:
-        newspace.spaceship.move(action)
+
+    newspace.spaceship.move(action)
 
     for egg in newspace.eggs.copy():
         egg.drop()
@@ -129,7 +126,6 @@ def nextSpacever3(space):
     newspace.invader_actions()
     return newspace
 
-
 def ASearch(space, isNext = True):
     '''
     Depth-limited search , fixed = 2
@@ -141,7 +137,7 @@ def ASearch(space, isNext = True):
     maxactions = ['remain', 'remain']
 
     ## Testing
-    maxSpace = nextSpace(space, ACTIONS[0], True, True)
+    maxSpace = nextSpace(space, ACTIONS[0])
 
     ## For minimax
 
@@ -166,7 +162,6 @@ def ASearch(space, isNext = True):
 
     return maxactions , maxSpace
 
-
 def testAsearch(space, depth: int):
     if not space.step % 3:
         actions = input('First actions: ')
@@ -176,16 +171,7 @@ def testAsearch(space, depth: int):
 
 
 
-def nextnextSpace(space, action):
-
-    newspace = nextSpace(space, action, True, True)
-
-    _ , newspace = ASearch(newspace, False)
-
-    return newspace
-
-
-## Minimax
+## Expectimax Pseudocode
 ### Auxiliary function
 
 ACTIONS = ['remain', 'a', 'd', 'w']
@@ -202,68 +188,9 @@ def terminal_test(space):
 
     return space.check_winning()
     
-
 def utility(state):
     return heuristic(state)
 
-
-def miniMax_desicion(space, depth:int, maxPlayer):
-    '''
-    return utility
-    '''
-    if depth == 0 or terminal_test(space):
-        return utility(space)
-    
-    if maxPlayer:
-        maxEval = -INF
-        for action in ACTIONS:
-            evaluate = miniMax_desicion(nextSpace(space, action), depth - 1, False)
-            maxEval = max(maxEval, evaluate)
-        return maxEval
-    
-    else:
-        minEval = INF
-        for action in ACTIONS:
-            evaluate = miniMax_desicion(nextSpace(space, action), depth - 1, True)
-            # print(f'EVALUATE : {evaluate} , action : {action}')
-            minEval = min(minEval, evaluate)
-        return minEval
-    
-
-def miniMax_seletion(space, depth:int):
-    '''
-    return action based on miniMax_desicion
-    '''
-    maxvalue = -INF
-    maxAction = None
-    for action in ACTIONS:
-        eva = miniMax_desicion(nextSpace(space, action), depth - 1, False)
-        # print(eva)
-        if eva > maxvalue:
-            maxvalue = eva
-            maxAction = action
-
-    return maxAction
-
-
-def miniMax(space, depth:int):
-    '''
-    Idea: fixed depth, in deterministic phrase: Using A* search but we consider it just one ply(2 actions).
-    Warning: There might be a tranposition table in this state. 
-    args:
-    space: Space
-    depth : depth
-    return action
-    '''
-    if not space.step % 3:
-        actions = miniMax_seletion(space, depth)
-        # print(f'ACTIONS AFTER MINIMAX: {actions}')
-    else:
-        actions, _ = ASearch(space)
-    return actions
-
-
-## Expectimax Pseudocode
 def successors(space):
     '''
     state: 'Space'
@@ -276,8 +203,6 @@ def successors(space):
     newspace2 = nextSpacever3(space)
     _,newspace2 = ASearch(newspace2, False)
     return [[newspace1, a ], [newspace2, 1 - a]]
-
-
         
 def value(space, depth, maxPlayer):
 
@@ -314,7 +239,6 @@ def expectimax(space, depth:int):
 
     return maxAction
 
-
 def expectimax_input(space, depth: int):
     if not space.step % 3:
         actions = expectimax(space, depth)
@@ -324,6 +248,7 @@ def expectimax_input(space, depth: int):
     return actions
 
 
+### Monte carlo tree search
 def MCTS(space, depth: int):
     '''
     Idea: Using monte carlo search for working with this state
@@ -331,7 +256,6 @@ def MCTS(space, depth: int):
     '''
 
     pass
-
 
 
 

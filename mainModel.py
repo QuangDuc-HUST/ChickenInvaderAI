@@ -1,7 +1,7 @@
 from Model import GameModel
 from LL import online  # Sourcecode: LL
 from HD import local_search  # Sourcecode: HD
-from QD import miniMax ,testAsearch  # Sourcecode: QD
+from QD import testAsearch  # Sourcecode: QD
 
 
 # Just be normal game, input
@@ -15,9 +15,9 @@ def main():
 
     ### One time
 
-    game.run(local_search)
+    # game.run(local_search)
     # game.run(online)
-    # game.run(getinput)
+    game.run(getinput)
     
     # print(game.getStatesStatistic())
     # print(game.getActionsStatistic())
@@ -32,7 +32,7 @@ def main():
 
 
     # __SAVE DATA__
-    game.saveData('Test1')
+    # game.saveData('Test1')
 
     ## Evaluatate multiple time
 
