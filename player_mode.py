@@ -188,3 +188,4 @@ def online_play(game: 'GameModel'):
                         if step == len(all_step.keys()):
                             step = 0
     pygame.quit()
+

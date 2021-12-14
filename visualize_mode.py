@@ -12,7 +12,7 @@ size = (7, 10)
 screen_width = unit*size[0]
 screen_height = unit*size[1]
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("CHICKEN IVADERS")
+pygame.display.set_caption("CHICKEN INVADERS")
 
 # __LOAD IMAGE__
 background = pygame.transform.scale(pygame.image.load(os.path.join(

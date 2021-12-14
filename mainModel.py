@@ -1,4 +1,4 @@
-from visualize_mode import display
+from player_mode import online_play
 from Model import GameModel
 from LL import online  # Sourcecode: LL
 from HD import local_search  # Sourcecode: HD
@@ -18,17 +18,16 @@ def main():
 
     # game.run(local_search)
     # game.run(online)
-    game.run(getinput)
-    
-    # print(game.getStatesStatistic())
-    # print(game.getActionsStatistic())
-
+    # game.run(getinput)
+    online_play(game)
     # game.run(testinputOffline)
     # game.run(testAsearch)
     # game.run(miniMax)
 
+        
+    # print(game.getStatesStatistic())
     # print(game.getActionsStatistic())
-    # print(len(game.getActionsStatistic()))
+
 
     # __SAVE DATA__
     # game.saveData('Test1')
@@ -41,6 +40,7 @@ def main():
 
     # eva.saveGame('Testmulti')
     # eva.evamultitime(online, True, 10)
+
 
 
 if __name__ == '__main__':
