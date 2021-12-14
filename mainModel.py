@@ -12,11 +12,11 @@ def getinput(space):
 
 def main():
     game = GameModel()
-    game.initialize(height=10, width=7, num=14)
+    game.initialize(height=9, width=7, num=14)
 
     # One time
 
-    game.run(local_search)
+    # game.run(local_search)
 
     # game.run(online)
     # game.run(getinput)
@@ -32,17 +32,17 @@ def main():
     # print(len(game.getActionsStatistic()))
 
     # __SAVE DATA__
-    game.saveData('Test1')
-    display(game.getStatesStatistic())
+    # game.saveData('Test1')
+    # display(game.getStatesStatistic())
 
     # Evaluatate multiple time
 
-    # eva = game.getEvaluate()
+    eva = game.getEvaluate()
 
-    # eva.evamultitime(local_search, times= 10)
+    eva.evamultitime(local_search, times=25)
 
+    # eva.evamultitime(online, 25)
     # eva.saveGame('Testmulti')
-    # eva.evamultitime(online, True, 10)
 
 
 if __name__ == '__main__':
