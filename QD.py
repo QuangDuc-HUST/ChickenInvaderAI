@@ -1,263 +1,202 @@
 import copy
 import random
 
-## Heuristic function
-def Manhattan(x, y):
-    '''
-    x: (x1,x2)
-    y: (y1,y2)
-    return Manhattan distance of two points
-    '''
-    return abs(x[0] - y[0]) + abs(x[1] - y[1])
+#Auxiliary function
+def nextSpace(space, action, isAgent):
 
-def heuristic(space):
-    '''
-    Idea: 
-    bases on lazers, and how close the eggs to the spaceship by Manhattan distance.
-    ship vs eggs:
+    newspace = copy.deepcopy(space)
 
-    :-99 * space.height * 2 if distance  = 0 
-    : - space.height * 2  + Manhattan distance
-    : 0 if in the bottom 
+    if isAgent:
+    # print(f'Next space step: {newspace.step}')
+        newspace.step += 1
+        for bullet in newspace.bullets:
+            bullet.move()
 
-    bullets and chickens: (effectiveness of the bullets)
+        for invader in newspace.invaders:
+            for bullet in newspace.bullets:
+                if bullet.collide(invader):
+                    newspace.bullets.remove(bullet)
+                    newspace.invaders.remove(invader)
+                    newspace.figure[bullet.x, bullet.y ] -=8
 
-    :1 lazers : space.height 
-    :2 * space height or 0
+        for egg in newspace.eggs.copy():
+            egg.drop()   
+        newspace.spaceship.move(action)
 
-    ship vs chickens:
-    : 3* (space.height * 2 - Manhattan distance)
+    else:
 
-    args:
-    return int value 
-    '''
-    if space is None:
-        return -INF
+        
+
+        newspace.invader_actions()
+    # print(f'OLD SPACE: {space}')
+    # print(f'NEW SPACE: {newspace}')
+    return newspace
+
+MAX_DEPTH = 3
+MAX_RANDOM = 3
+ACTIONS = ['w', 'a', 'd', 'remain']
+
+def getpositions(space):
 
     ship = space.spaceship.get_position()
     lstbullets = [x.get_position() for x in space.bullets]
     lstinvaders = [x.get_position() for x in space.invaders]
     lsteggs = [x.get_position() for x in space.eggs]
+    return ship, lstbullets, lstinvaders, lsteggs
 
-    result = 0
 
-    dic = {}
+def get_legal_actions(space):
+    '''
+    return lst of legal actions
+    '''
+    # available_actions = [True, True, True, True]
+    # ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
+    # for egg in lsteggs:
+    #     if egg[0] == 8:
+    #         if ship[1] == egg[1] - 1:
+    #             available_actions[1] = False
+    #         elif ship[1] == egg[1] + 1:
+    #             available_actions[2] = False
+    #         elif ship[1] == egg[1]:
+    #             available_actions
+    if not space.spaceship.available:
+        return ['a', 'd', 'remain']
 
+    return ACTIONS
+
+def nearest_invader(space):
+    '''
+    Return the distance of nearest invader
+    '''
+    ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
+    min = space.width + 10
     for invader in lstinvaders:
-        y = invader[1]
-        if y not in dic:
-            dic[y] = [invader]
-        else:
-            dic[y].append(invader)
+        temp = abs(invader[1] - ship[1])
+        if temp < min:
+            min = temp
+    return min
+
+def expected_chicken(space):
+    '''
+    return the number of real chicken
+    '''
+    ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
+    actual_chicken = len(lstinvaders)
+    willdie_chicken = 0
+
+    for i in range(space.width):
+        chickens = 0
+        bullets = 0
+        for chicken in lstinvaders:
+            if chicken[1] == i:
+                chickens += 1
         
-    ## Eggs and ship:
-    for egg in lsteggs:
-        currentdistant = Manhattan(egg, ship)
-        if not currentdistant: 
-            result -= 99 * space.height * 2
-        elif egg[0] == space.height - 1:
-            continue
-        else:
-            result += 0.9 *(-space.height * 2 + currentdistant)
-    
-    for bullet in lstbullets:
-        ybullet = bullet[1]
-        if ybullet in dic:
-            result += 2 * space.height
+        for bullet in lstbullets:
+            if bullet[1] == i:
+                bullets += 1
 
-    for invader in lstinvaders:
-        result +=   2.5 * (space.width - abs(invader[1] - ship[1]) )
+        willdie_chicken += min(chickens, bullets)
+    
+    return actual_chicken - willdie_chicken
+
+def evaluate(space):
+    '''
+    return evaluate value of the state.
+    '''
+    ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
+
+    for egg in lsteggs:
+        if egg == ship:
+            return -float('inf')
+
+    result = -nearest_invader(space)
+    result -= expected_chicken(space) * 1.5
+
+
+
+    # dic = {}
+
+    # for invader in lstinvaders:
+    #     y = invader[1]
+    #     if y not in dic:
+    #         dic[y] = [invader]
+    #     else:
+    #         dic[y].append(invader)
+        
+    # ## Eggs and ship:
+    # for egg in lsteggs:
+    #     currentdistant = Manhattan(egg, ship)
+    #     if not currentdistant: 
+    #         result -= 99 * space.height * 2
+    #     elif egg[0] == space.height - 1:
+    #         continue
+    #     else:
+    #         result += 0.9 *(-space.height * 2 + currentdistant)
+    
+    # for bullet in lstbullets:
+    #     ybullet = bullet[1]
+    #     if ybullet in dic:
+    #         result += 2 * space.height
+
+    # for invader in lstinvaders:
+    #     result +=   2.5 * (space.width - abs(invader[1] - ship[1]) )
+
     return result
 
-def nextSpace(space, action):
 
-    newspace = copy.deepcopy(space)
 
-    # print(f'Next space step: {newspace.step}')
-    for bullet in newspace.bullets:
-        bullet.move()
 
-    for invader in newspace.invaders:
-        for bullet in newspace.bullets:
-            if bullet.collide(invader):
-                newspace.bullets.remove(bullet)
-                newspace.invaders.remove(invader)
-                newspace.figure[bullet.x, bullet.y ] -=8
-
-    newspace.spaceship.move(action)
-
-    for egg in newspace.eggs.copy():
-        egg.drop()
-
-    newspace.invader_actions()
-    # print(f'OLD SPACE: {space}')
-    # print(f'NEW SPACE: {newspace}')
-    return newspace
-
-def nextSpacever2(space,action):
+def expectimax_getaction(space):
     '''
-    Just environment and actions
+    return an action else remain
     '''
-    newspace = copy.deepcopy(space)
-    if not newspace.step % 3:
-        print('You are the right phrase.')
-    for bullet in newspace.bullets:
-        bullet.move()
+    score, actions = maxValue(space, 0)
+    return actions[0] if len(actions) > 0 else 'remain'
 
-    for invader in newspace.invaders:
-        for bullet in newspace.bullets:
-            if bullet.collide(invader):
-                newspace.bullets.remove(bullet)
-                newspace.invaders.remove(invader)
-                newspace.figure[bullet.x, bullet.y ] -=8
 
-    newspace.spaceship.move(action)
-
-    for egg in newspace.eggs.copy():
-        egg.drop()
-
-    return newspace
-
-def nextSpacever3(space):
+def maxValue(space, depth):
     '''
-    Just invaders
+    return maxScore and maxScoreActions
     '''
-    newspace = copy.deepcopy(space)
-    newspace.invader_actions()
-    return newspace
+    if space.check_winning() or space.check_losing() or depth == MAX_DEPTH:
+        return evaluate(space), []
 
-def ASearch(space, isNext = True):
-    '''
-    Depth-limited search , fixed = 2
-    return: lst of 2 actions
-    '''
-    MIN = -99 * space.height * 1.5
-    ACTIONS = ['a', 'd' , 'w', 'remain']
-    max = -float('inf')
-    maxactions = ['remain', 'remain']
+    max_score = float('-inf')
+    max_score_actions = None
 
-    ## Testing
-    maxSpace = nextSpace(space, ACTIONS[0])
+    legal_actions = get_legal_actions(space)
 
-    ## For minimax
-
-    for firstaction in ACTIONS:
-        #######!!!!!!!!!!!########### Becareful: End game
-        if isNext:
-            firstspace = nextSpace(space, firstaction)
-        else:
-            firstspace = nextSpace(space, firstaction, True, True)
-        # print(f'First space step: {firstspace.step}')
-        if heuristic(firstspace) < MIN:
-            continue
-        for secondaction in ACTIONS:
-            secondspace = nextSpace(firstspace, secondaction, True, True)
-            heu = heuristic(secondspace)
-            # print(f'{firstaction}, {secondaction}, {heu}')
-
-            if heu > max:
-                max = heu
-                maxactions= [firstaction, secondaction]
-                maxSpace = secondspace
-
-    return maxactions , maxSpace
-
-def testAsearch(space, depth: int):
-    if not space.step % 3:
-        actions = input('First actions: ')
-    else:
-        actions, _ = ASearch(space)
-    return actions
-
-
-
-## Expectimax Pseudocode
-### Auxiliary function
-
-ACTIONS = ['remain', 'a', 'd', 'w']
-INF = float('inf')
-
-def terminal_test(space):
-    '''
-    state : 'Space'
-    return Boolean weather terminal or not
-    '''
-    for egg in space.eggs.copy():
-        if space.spaceship.collide(egg):
-            return True
-
-    return space.check_winning()
-    
-def utility(state):
-    return heuristic(state)
-
-def successors(space):
-    '''
-    state: 'Space'
-    return list of (state, probability)
-    Demo: Just 2 leaf
-    '''
-    a = random.random()
-    newspace1 = nextSpacever3(space)
-    _, newspace1 = ASearch(newspace1, False)
-    newspace2 = nextSpacever3(space)
-    _,newspace2 = ASearch(newspace2, False)
-    return [[newspace1, a ], [newspace2, 1 - a]]
+    for action in legal_actions:
+        score, actions = expectedValue(nextSpace(space, action, True), depth)
+        if score > max_score:
+            max_score = score
+            max_score_actions = [action] + actions
         
-def value(space, depth, maxPlayer):
-
-    if depth == 0 or terminal_test(space):
-        return utility(space)
     
-    if maxPlayer:
-        maxEval = -INF
-        for action in ACTIONS:
-            evaluate = value(nextSpacever2(space, action), depth - 1, False)
-            maxEval = max(maxEval, evaluate)
-        return maxEval
+    return max_score, max_score_actions
+
+def expectedValue(space, depth):
+    '''
+    return expected score
+    '''
+    if space.check_winning() or space.check_losing() or depth == MAX_DEPTH:
+        # print(f'depth: {depth}')
+        return evaluate(space), []
     
-    else:
-        v = 0
-        for suc, pro in successors(space):
-            v += value(suc, depth - 1, True) * pro
-        # print(v)
-        return v
+    expected_score = 0
 
-def expectimax(space, depth:int):
-    '''
-    return action based on value
-    '''
-    maxvalue = -INF
-    maxAction = None
-    for action in ACTIONS:
-        print('Start explore ' + action)
-        eva = value(nextSpacever2(space, action), depth - 1, False)
-        print(f'EVA: {eva} in action {action}')
-        if eva > maxvalue:
-            maxvalue = eva
-            maxAction = action
+    for _ in range(MAX_RANDOM):
+        score, actions = maxValue(nextSpace(space, 'remain', False), depth + 1)
+        expected_score += score / MAX_RANDOM
+        # print(MAX_RANDOM)
 
-    return maxAction
 
-def expectimax_input(space, depth: int):
-    if not space.step % 3:
-        actions = expectimax(space, depth)
-    else:
-        actions , _ = ASearch(space)
+    return expected_score , []
     
-    return actions
 
 
-### Monte carlo tree search
-def MCTS(space, depth: int):
-    '''
-    Idea: Using monte carlo search for working with this state
-    https://youtu.be/UXW2yZndl7U
-    '''
-
-    pass
 
 
 
 if __name__ == '__main__':
-    print(Manhattan([1,2], [-4,7]))
+    print('Hello')

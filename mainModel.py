@@ -2,7 +2,7 @@ from player_mode import online_play
 from Model import GameModel
 from LL import online  # Sourcecode: LL
 from HD import local_search  # Sourcecode: HD
-
+from QD import expectimax_getaction
 
 # Just be normal game, input
 def getinput(space):
@@ -17,7 +17,8 @@ def main():
 
     # game.run(local_search)
     # game.run(online)
-    game.run(getinput)
+    # game.run(getinput)
+    # game.run(expectimax_getaction)
     # online_play(game)
     # game.run(testinputOffline)
     # game.run(testAsearch)
@@ -33,9 +34,9 @@ def main():
 
     # Evaluatate multiple time
 
-    # eva = game.getEvaluate()
+    eva = game.getEvaluate()
 
-    # eva.evamultitime(local_search, times= 10)
+    eva.evamultitime(expectimax_getaction, times= 25)
 
     # eva.saveGame('Testmulti')
     # eva.evamultitime(online, True, 10)

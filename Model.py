@@ -421,6 +421,7 @@ class Space(object):
 		'''
 		for egg in self.eggs.copy():
 				egg.drop()
+				
 class GameModel(object):
 	'''
 	main model of the game in order to : evaluate, environment, control the ship
@@ -518,9 +519,9 @@ class GameModel(object):
 			space.step += 1
 			space.update_bullet()
 
-			print(f'Step {space.step + 1}: Do ', end='')
-			
+			print('Start algorithm.')
 			temp = algorithm(space)
+			print(f'Step {space.step + 1}: Do ', end='')
 			print(f'You choose: {temp}')
 			space.spaceship.move(temp)
 
