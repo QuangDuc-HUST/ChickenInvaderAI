@@ -329,16 +329,19 @@ class Space(object):
 			x, y = invader.get_position()
 			if self.figure[x+ 1, y ] != 1:
 				acting_possible_invaders.append(invader)
-
+		
 		if self.step % 3 == 0 : 
-			if len(acting_possible_invaders) > 3: 
-				laying_invader = sorted(np.random.choice(range(len(acting_possible_invaders)), 3, replace=False))
+
+			if len(acting_possible_invaders): 
+				new_egg_number = np.random.randint(1, min([4,1+ len(acting_possible_invaders)]))
+				laying_invader = sorted(np.random.choice(range(len(acting_possible_invaders)), new_egg_number, replace=False))
 				for i in laying_invader:
 					acting_possible_invaders[i].lay()
 			else:
+				return 
 				for i in acting_possible_invaders:
 					i.lay()
-
+	
 	def initialize(self, num:int):
 		'''
 		initialize by itself like environment_initialize
@@ -352,9 +355,9 @@ class Space(object):
 		'''
 		self.num = num
 
-		ship_y = np.random.randint(self.width)
+		# ship_y = np.random.randint(self.width)
 
-		# ship_y = space.width //2  
+		ship_y = self.width //2  
 		# ship_y = 0
 		SpaceShip(x=self.height-1, y=ship_y, belong=self)
 
