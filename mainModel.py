@@ -1,9 +1,8 @@
-from visualize_mode import display
+from player_mode import online_play
 from Model import GameModel
 from LL import online  # Sourcecode: LL
 from HD import local_search  # Sourcecode: HD
-from QD import miniMax, testAsearch  # Sourcecode: QD
-
+from QD import expectimax_getaction
 
 # Just be normal game, input
 def getinput(space):
@@ -17,32 +16,31 @@ def main():
     # One time
 
     # game.run(local_search)
-
     # game.run(online)
     # game.run(getinput)
-
-    # print(game.getStatesStatistic())
-    # print(game.getActionsStatistic())
-
+    # game.run(expectimax_getaction)
+    # online_play(game)
     # game.run(testinputOffline)
     # game.run(testAsearch)
     # game.run(miniMax)
 
+        
+    # print(game.getStatesStatistic())
     # print(game.getActionsStatistic())
-    # print(len(game.getActionsStatistic()))
+
 
     # __SAVE DATA__
     # game.saveData('Test1')
-    # display(game.getStatesStatistic())
 
     # Evaluatate multiple time
 
     eva = game.getEvaluate()
 
-    eva.evamultitime(local_search, times=25)
+    eva.evamultitime(expectimax_getaction, times= 25)
 
     # eva.evamultitime(online, 25)
     # eva.saveGame('Testmulti')
+
 
 
 if __name__ == '__main__':
