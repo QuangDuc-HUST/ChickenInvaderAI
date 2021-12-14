@@ -255,7 +255,7 @@ def local_search(space:'Space'):
 				
 	pass
 def main():
-	space, ship = environment_initialize(10,7,3)
+	space, ship = environment_initialize(10,7,14)
 	print(space.figure)
 	print('-+-+'*20)
 	i = 0
@@ -276,8 +276,8 @@ def main():
 		## correlation between ship and egg
 
 		#action of ship
-		dir = input()
-		# dir = (local_search(space=space))
+		# dir = input()
+		dir = (local_search(space=space))
 		# ship.move(ship_run(space=space))
 		space.spaceship.move(dir)
 		# ship.move(local_search(space=space))
@@ -306,7 +306,7 @@ if __name__ == '__main__':
 	i = 0 
 	aver = []
 	occur = []
-	while i < 1:
+	while i < 101:
 		print(f'Step {i + 1 }')
 		try:
 			aver.append(main())
