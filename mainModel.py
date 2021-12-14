@@ -2,7 +2,6 @@ from player_mode import online_play
 from Model import GameModel
 from LL import online  # Sourcecode: LL
 from HD import local_search  # Sourcecode: HD
-from QD import testAsearch  # Sourcecode: QD
 
 
 # Just be normal game, input
@@ -18,8 +17,8 @@ def main():
 
     # game.run(local_search)
     # game.run(online)
-    # game.run(getinput)
-    online_play(game)
+    game.run(getinput)
+    # online_play(game)
     # game.run(testinputOffline)
     # game.run(testAsearch)
     # game.run(miniMax)
