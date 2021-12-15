@@ -1,6 +1,5 @@
 import pygame
 import os
-import json
 import numpy as np
 from Model import GameModel
 
@@ -57,7 +56,7 @@ def online_play(game: 'GameModel'):
             label = pygame.font.SysFont("arial", 12).render(
                 f"Press A, D, S, W to control|| Press left, right arrow to 'play-back", 1, (255, 255, 255))
         if finish and step == len(all_step.keys())-1:
-            if len(space.eggs) > 0:
+            if len(space.invaders) > 0:
                 lose_label = pygame.font.SysFont(
                     "arial", 40).render(f"LOSE", 1, Red)
                 screen.blit(lose_label, (screen_width/2 - lose_label.get_width() /
@@ -68,7 +67,7 @@ def online_play(game: 'GameModel'):
                 screen.blit(win_label, (screen_width/2 - win_label.get_width() /
                             2, screen_height/2 - win_label.get_height()/2))
         screen.blit(label, (10, screen_height-label.get_height()-10))
-        data = json.loads(all_step[step])  # type here is a list of int
+        data = all_step[step]  # type here is a list of int
         for y in range(len(data)):
             for x in range(len(data[y])):
                 if data[y][x] == 1:
@@ -98,9 +97,6 @@ def online_play(game: 'GameModel'):
             pygame.draw.line(screen, Grey, (0, i * unit),
                              (screen_width, i * unit))
         pygame.display.update()
-
-    def to_json(figure: 'np.ndarray', all_step: dict, step: int):
-        all_step[step] = json.dumps(figure.tolist())
 
     def environment_changes(space, step: int):
         """
@@ -136,7 +132,7 @@ def online_play(game: 'GameModel'):
     step = 0
     run = True
     finish = False
-    to_json(space.figure, all_step, i)
+    all_step[0] = space.figure
     FPS = 60
     clock = pygame.time.Clock()
     while run:
@@ -163,15 +159,18 @@ def online_play(game: 'GameModel'):
                     else:
                         n = 'remain'
                     i += 1
-                    print(f'Step {i}: Do ', end='')
+                    print(f'Step {i}: ' + n)
                     environment_changes(space, i)
                     ship.move(n)
-                    to_json(space.figure, all_step, i)
+                    all_step[i] = space.figure
                     if space.check_collision():
                         finish = True
+                        game._states = list(all_step.values())
+                        print(len(game._states))
                     if space.check_winning():
                         print('Winning')
                         finish = True
+                        game._states = list(all_step.values())
                     space.show()
                 elif event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                     if mode == 'play':
