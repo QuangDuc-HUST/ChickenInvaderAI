@@ -1,9 +1,11 @@
-Chicken Invader Project Artifical Intellegence 2021
+Chicken Invader Project Artificial Intellegence 2021
 =========
 Implementation of AI algorithms for (simple) chicken invader game. 
 ---------
 Task
---------
+---------
+
+
 - `main.py` : core of the game
 - `displaymatrixgame.py`: display game in matrix
 - `test_visualize.py` : test display game in gamepy

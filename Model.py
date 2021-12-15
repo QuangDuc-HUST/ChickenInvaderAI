@@ -75,6 +75,9 @@ class Evaluate(object):
 
 	
 	def saveGame(self, filename):
+		if not len(self._states):
+			raise GameNotRun('Game does not run yet.') 
+			
 		FILENAME = os.path.join('data', f'{filename}_multi.pickle')
 		with open(FILENAME, 'wb') as f:
 			pickle.dump(self._states, f)

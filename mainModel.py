@@ -20,11 +20,10 @@ def main():
     # game.run(local_search)
     # game.run(getinput)
     # game.run(online)
-    # online_play(game)
+    online_play(game)
     # game.run(testinputOffline)
     # game.run(testAsearch)
     # game.run(miniMax)
-
         
     # print(game.getStatesStatistic())
     # print(game.getActionsStatistic())
@@ -35,13 +34,13 @@ def main():
 
     # Evaluatate multiple time
 
-    eva = game.getEvaluate()
+    # eva = game.getEvaluate()
 
-    # eva.evamultitime(local_search, times= 15)
+    # eva.evamultitime(local_search, times= 100)
 
-    eva.evamultitime(expectimax_getaction, times= 5)
+    # eva.evamultitime(expectimax_getaction, times= 100)
     # eva.evamultitime(online, 25)
-    eva.saveGame('Testmulti')
+    # eva.saveGame('Testmulti1')
 
 
 
