@@ -127,7 +127,7 @@ def evaluate(space):
 
     result -= nearest_invader(space)
     result -= expected_chicken(space) * 3
-    result -= 1.5 * top_egg(space)
+    result -= 2 * top_egg(space)
 
 
     return result

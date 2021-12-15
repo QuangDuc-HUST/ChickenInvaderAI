@@ -15,10 +15,11 @@ def main():
 
     # One time
 
+    # game.run(online_play)
+    # online_play(game)
     # game.run(local_search)
-    # game.run(online)
     # game.run(getinput)
-    # game.run(expectimax_getaction)
+    # game.run(online)
     # online_play(game)
     # game.run(testinputOffline)
     # game.run(testAsearch)
@@ -30,11 +31,13 @@ def main():
 
 
     # __SAVE DATA__
-    # game.saveData('Test1')
+    # game.saveData('Test7')
 
     # Evaluatate multiple time
 
     eva = game.getEvaluate()
+
+    # eva.evamultitime(local_search, times= 15)
 
     eva.evamultitime(expectimax_getaction, times= 5)
     # eva.evamultitime(online, 25)

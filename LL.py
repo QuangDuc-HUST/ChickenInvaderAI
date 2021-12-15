@@ -139,9 +139,16 @@ def search(space):
 
     def move_rating(f1, previous_move, move):
         invaders_columns = []
+        max_invaders = 0
         for i in range(w):
             col = [f1[k][i] for k in range(h)]
-            if col.count(1) > col.count(7) + col.count(11):
+            t = col.count(1) - col.count(7) - col.count(11)
+            if t > max_invaders:
+                max_invaders = t
+
+        for i in range(w):
+            col = [f1[k][i] for k in range(h)]
+            if col.count(1) == col.count(7) + col.count(11) + max_invaders:
                 invaders_columns.append(i)
         try:
             return min([abs(move - k) for k in invaders_columns]) <= min([abs(previous_move - k) for k in
@@ -184,14 +191,15 @@ def search(space):
         # check if we reach the leaf
         if check(f):
             if len(map.m) == 1:
-                return 'd'
+                return 'w' if map.m[0] == 'a or d' else 'a'
             else:
                 print(map.m)
+                print(map.h)
                 return map.m[1]
         else:
             # if we shot in the previous turn, this turn we should not shoot cuz it makes no senses
             if map.m[-1] == 'w':
-                possible_moves = ['a', 'd']
+                possible_moves = ['a', 'd', 'remain']
             else:
                 possible_moves = ['w', 'a', 'd']
             for move in possible_moves:
@@ -213,18 +221,21 @@ def search(space):
                     # temp_point += move_rating(f_temp, map.ship_y, temp_y)
                 else:
                     temp_y = map.ship_y
-                    f_temp[h - 2][map.ship_y] += 7
-                    b_temp.append((h - 2, map.ship_y))
-                    # success of bullet
-                    # a bullet is considered to be a good one is the bullet that will kill a invaders in the future
-                    # if it is a efficient action, it will get points depends on the time that the bullet is shot
-                    # the sooner it is shot, the larger the points
-                    # otherwise, it will loose points in the same way
-                    column = [f_temp[t][map.ship_y] for t in range(h)]
-                    if column.count(1) >= column.count(7) + column.count(11):
-                        temp_point += 2 * (10 - len(map.m))
-                    else:
-                        temp_point -= 10 - len(map.m)
+                    if move == 'w':
+                        f_temp[h - 2][map.ship_y] += 7
+                        b_temp.append((h - 2, map.ship_y))
+                        # success of bullet
+                        # a bullet is considered to be a good one is the bullet that will kill a invaders in the future
+                        # if it is a efficient action, it will get points depends on the time that the bullet is shot
+                        # the sooner it is shot, the larger the points
+                        # otherwise, it will loose points in the same way
+                        column = [f_temp[t][map.ship_y] for t in range(h)]
+                        if column.count(1) >= column.count(7) + column.count(11):
+                            temp_point += 2 * (10 - len(map.m))
+                            if column.count(1) == 2 and column.count(7) + column.count(11) == 1:
+                                temp_point += 99 * (10 - len(map.m))
+                        else:
+                            temp_point -= 10 - len(map.m)
                     # change variable to make sure it cant shoot in the next step ( like the environment )
                 # move the ship in the grid
                 f_temp[h - 1][map.ship_y] -= 2
@@ -232,7 +243,9 @@ def search(space):
                 # if our move in this turn is better than that of the last one, which mean the ship move closer to the
                 # columns that contain invaders, it will get bonus points due to the appearance time.
                 if move_rating(f, map.ship_y, temp_y):
-                    temp_point += 10 - len(map.m)
+                    temp_point += (9 - len(map.m))
+                else:
+                    temp_point -= 9 - len(map.m)
                 if (h - 1, temp_y) not in e:
                     # if that actions don't lead to collision with an egg, we will go for it
                     f_temp, i_temp, b_temp = change_bullets(f_temp, i_temp, b_temp)

@@ -8,7 +8,7 @@ White, Grey = (255, 255, 255), (100, 100, 100)
 
 # __SET UP__
 unit = 60
-size = (7, 10)
+size = (7,9)
 screen_width = unit*size[0]
 screen_height = unit*size[1]
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -108,9 +108,9 @@ def display(list_data):
 # __LOAD DATA__
 
 if __name__ == '__main__':
-    
     file_name = 'Testmulti_multi'
     with open(f'data\{file_name}.pickle', 'rb') as f:
         list_data = pickle.load(f)
 
-    display(list_data[4])
+    # print(list_data[6])
+    display(list_data[0])
