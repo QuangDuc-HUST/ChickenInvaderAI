@@ -339,7 +339,7 @@ class Space(object):
 		'''
 		self.num = num
 
-		ship_y = np.random.randint(self.width)
+		ship_y = self.width//2
 
 		# ship_y = space.width //2  
 		# ship_y = 0
