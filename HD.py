@@ -189,7 +189,7 @@ def local_search(space:'Space'):
 	return an action of ship with lowest cost 
 	'''
 	actions = ['w', 'a', 'd', 'remain']
-	cost = {'w':2, 'a': 3, 'd': 3, 'remain': 1}
+	cost = {'w':3, 'a': 2, 'd': 2, 'remain': 1}
 	current_fig = space.figure
 	decision = None
 	minimum_g = float('inf')
@@ -235,7 +235,7 @@ def local_search(space:'Space'):
 		else:
 			nearest_inv = nearest_invader(child_space)
 		print(f"Nearest chicken: {nearest_inv}")
-		f = 2* (len(child_space.invaders) - len(child_space.bullets)) + cost[act] + 3*(nearest_inv)
+		f = 3* (len(child_space.invaders) - len(child_space.bullets)) + cost[act] + 2*(nearest_inv)
 		if minimum_g > f:
 			minimum_g = f
 			decision = act
