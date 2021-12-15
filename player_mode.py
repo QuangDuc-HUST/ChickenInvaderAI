@@ -1,16 +1,16 @@
 import pygame
 import os
+import copy
 import numpy as np
 from Model import GameModel
 
 
 def online_play(game: 'GameModel'):
-    White, Grey, Red = (255, 255, 255), (100, 100, 100), (255, 0, 0)
-    unit = 50
+    Grey, Red = (100, 100, 100), (255, 0, 0)
+    unit = 60
     pygame.display.set_caption("CHICKEN INVADERS")
     pygame.init()
     pygame.font.init()
-    all_step = dict()
     space = game.getSpace()
     ship = space.spaceship
     size = (space.width, space.height)
@@ -30,7 +30,6 @@ def online_play(game: 'GameModel'):
         os.path.join("assets", "pixel_laser_red.png")), (unit, unit))
 
     # __DRAW OBJECT FUNCTIONS__
-
     def draw_ship(x, y):
         screen.blit(img_ship, (x*unit, y*unit))
 
@@ -44,6 +43,9 @@ def online_play(game: 'GameModel'):
         screen.blit(img_chicken, (x*unit, y*unit))
 
     def draw_screen(step: int):
+        '''
+        Draw objects on screen by data from saved states
+        '''
         screen.blit(background, (0, 0))
         step_label = pygame.font.SysFont("arial", 12).render(
             f"Step: {step} --- Mode: " + mode, 1, (255, 255, 255))
@@ -55,7 +57,7 @@ def online_play(game: 'GameModel'):
         elif mode == 'play':
             label = pygame.font.SysFont("arial", 12).render(
                 f"Press A, D, S, W to control|| Press left, right arrow to 'play-back", 1, (255, 255, 255))
-        if finish and step == len(all_step.keys())-1:
+        if finish and step == len(game._states)-1:
             if len(space.invaders) > 0:
                 lose_label = pygame.font.SysFont(
                     "arial", 40).render(f"LOSE", 1, Red)
@@ -67,7 +69,8 @@ def online_play(game: 'GameModel'):
                 screen.blit(win_label, (screen_width/2 - win_label.get_width() /
                             2, screen_height/2 - win_label.get_height()/2))
         screen.blit(label, (10, screen_height-label.get_height()-10))
-        data = all_step[step]  # type here is a list of int
+        data = game._states[step]  # type here is a list of int
+        # print(step, data)
         for y in range(len(data)):
             for x in range(len(data[y])):
                 if data[y][x] == 1:
@@ -109,9 +112,7 @@ def online_play(game: 'GameModel'):
             bullet.move()
 
         # invader actions
-
         acting_possible_invaders = []
-
         for invader in space.invaders:
             x, y = invader.get_position()
             if space.figure[x + 1, y] != 1:
@@ -128,23 +129,24 @@ def online_play(game: 'GameModel'):
                     i.lay()
 
     mode = 'play'
-    i = 0
-    step = 0
+    current_step = 0
+    playback_step = 0
     run = True
     finish = False
-    all_step[0] = space.figure
+    game._states.append(copy.deepcopy(space.figure))
     FPS = 60
     clock = pygame.time.Clock()
     while run:
         clock.tick(FPS)
         if mode == 'play':
-            draw_screen(i)
+            draw_screen(current_step)
         elif mode == 'play-back':
-            draw_screen(step)
+            draw_screen(playback_step)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.KEYDOWN:
+
                 if mode == 'play-back' and event.key == pygame.K_SPACE:
                     mode = 'play'
                     continue
@@ -158,40 +160,35 @@ def online_play(game: 'GameModel'):
                         n = 'w'
                     else:
                         n = 'remain'
-                    i += 1
-                    print(f'Step {i}: ' + n)
-                    environment_changes(space, i)
+                    current_step += 1
+                    print(f'Step {current_step}: ' + n)
+                    environment_changes(space, current_step)
                     ship.move(n)
-                    all_step[i] = space.figure
+                    game._states.append(copy.deepcopy(space.figure))
                     if space.check_collision():
                         finish = True
-                        game._states = list(all_step.values())
-                        print(len(game._states))
                     if space.check_winning():
                         print('Winning')
                         finish = True
-                        game._states = list(all_step.values())
                     space.show()
                 elif event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                     if mode == 'play':
-                        step = i
+                        playback_step = current_step
                         mode = 'play-back'
                     if event.key == pygame.K_LEFT:
-                        if step >= 0:
-                            step -= 1
-                        if step == -1:
-                            step = len(all_step.keys())-1
+                        if playback_step >= 0:
+                            playback_step -= 1
+                        if playback_step == -1:
+                            playback_step = len(game._states)-1
                     if event.key == pygame.K_RIGHT:
-                        if step <= len(all_step.keys())-1:
-                            step += 1
-                        if step == len(all_step.keys()):
-                            step = 0
+                        if playback_step <= len(game._states)-1:
+                            playback_step += 1
+                        if playback_step == len(game._states):
+                            playback_step = 0
     pygame.quit()
 
 
-def main():
+if __name__ == '__main__':
     game = GameModel()
-    game.initialize(height=10, width=7, num=14)
-
-    # online_play(game)
-main()
+    game.initialize(height=9, width=7, num=14)
+    online_play(game)

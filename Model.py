@@ -3,6 +3,7 @@ import numpy as np
 import timeit
 import copy
 import pickle
+import os
 
 
 class Evaluate(object):
@@ -591,7 +592,7 @@ class GameModel(object):
 		save data in pickle file in data
 		name = filename + currenttime 
 		'''
-		with open(f'data\\{filename}.pickle', 'wb') as f:
+		with open(os.path.join('data', filename), 'wb') as f:
 			pickle.dump(self.getStatesStatistic(), f)
 
-		print(f'Your data "{filename}.pickle" has saved successfully in data folder')
+		print(f'Your data "{filename}" has saved successfully in data folder')

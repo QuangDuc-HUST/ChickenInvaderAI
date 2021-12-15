@@ -27,6 +27,8 @@ img_laser = pygame.transform.scale(pygame.image.load(
     os.path.join("assets", "pixel_laser_red.png")), (unit, unit))
 
 # __DRAW OBJECT FUNCTIONS__
+
+
 def draw_ship(x, y):
     screen.blit(img_ship, (x*unit, y*unit))
 
@@ -46,7 +48,7 @@ def draw_chicken(x, y):
 # __DRAW SCREEN FUNCTION__
 def draw_screen(step: str, list_data):
     screen.blit(background, (0, 0))
-    step_label = pygame.font.SysFont("comicsans", 20).render(
+    step_label = pygame.font.SysFont("arial", 20).render(
         f"Step: {step}", 1, (255, 255, 255))
     screen.blit(step_label, (0, screen_height-step_label.get_height()))
     if int(step) >= 0:
@@ -72,7 +74,7 @@ def draw_screen(step: str, list_data):
                     draw_laser(x, y)
     for i in range(1, size[0]):
         pygame.draw.line(screen, Grey, (i * unit, 0),
-                         (i * unit, screen_height))
+                         (i * unit, screen_height-unit))
     for i in range(1, size[1]):
         pygame.draw.line(screen, Grey, (0, i * unit), (screen_width, i * unit))
     pygame.display.update()
@@ -110,7 +112,7 @@ def display(list_data):
 if __name__ == '__main__':
 
     file_name = 'Test1'
-    with open(f'data\{file_name}.pickle', 'rb') as f:
+    with open(os.path.join('data', file_name), 'rb') as f:
         list_data = pickle.load(f)
 
     print(list_data)
