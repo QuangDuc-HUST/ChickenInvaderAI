@@ -15,22 +15,15 @@ def main():
 
     # One time
 
-    # game.run(online_play)
     # online_play(game)
     # game.run(local_search)
     # game.run(getinput)
     # game.run(online)
-    online_play(game)
-    # game.run(testinputOffline)
-    # game.run(testAsearch)
-    # game.run(miniMax)
-        
-    # print(game.getStatesStatistic())
-    # print(game.getActionsStatistic())
-
+    game.run(expectimax_getaction)
+    # online_play(game)
 
     # __SAVE DATA__
-    # game.saveData('Test7')
+    game.saveData('Test')
 
     # Evaluatate multiple time
 
