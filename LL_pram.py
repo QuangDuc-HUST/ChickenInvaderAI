@@ -2,40 +2,8 @@ def search(space):
     # because the eggs is spawned randomly, we only can search for what will happen in the next few steps
     # the method will search all strategies until all the current eggs in the space disappear
     import copy
+    import read_space
     # environment changing function
-    # eggs dropping
-
-    def change_eggs(figure, eggs):
-        next_egg = []
-        for x, y in eggs:
-            figure[x][y] -= 4
-            if x + 1 < len(figure):
-                figure[x + 1][y] += 4
-                next_egg.append((x + 1, y))
-        return figure, next_egg
-    # bullets moving
-
-    def change_bullets(figure, invaders, bullets):
-        next_bullet = []
-        for x, y in bullets:
-            figure[x][y] -= 7
-            if (x - 1, y) in invaders:
-                figure[x - 1][y] -= 1
-            elif (x - 2, y) in invaders:
-                figure[x - 2][y] -= 1
-            else:
-                if x - 2 >= 0:
-                    figure[x - 2][y] += 7
-                    next_bullet.append((x - 2, y))
-        return figure, [(x, y) for x, y in invaders if figure[x][y] == 1], next_bullet
-    # function that check if we reach the leaf of searching tree
-
-    def check(f):
-        for i in range(len(f)):
-            for j in range(len(f[i])):
-                if f[i][j] in [4, 11]:
-                    return False
-        return True
 
     '''def rate(f):
         completeness = 0
@@ -52,19 +20,14 @@ def search(space):
             completeness += min([invaders, bullets])
         return completeness + 14 - no_of_alive_invaders'''
     # some variables of the environment
-    figure = list([list(i) for i in space.figure])
-    invaders_positions = [(i.x, i.y) for i in space.invaders]
-    eggs_positions = [(i.x, i.y) for i in space.eggs]
-    bullets_positions = [(i.x, i.y) for i in space.bullets]
-    ship_x, ship_y = space.spaceship.x, space.spaceship.y
-    w, h = space.width, space.height
+    figure, invaders_positions, eggs_positions, bullets_positions, ship_y, w, h = read_space.input_reader(space)
     # best_bullet variable that use to rate the efficiency of a solution
     best_bullet = -99999
     # and the solution
     best_way = []
     # check whether the ship shoot before
     # if it just fired, we can't should right now, we have to wait until the next step to fire
-    if figure[ship_x - 3][ship_y] in [7, 11]:
+    if figure[h - 4][ship_y] in [7, 11]:
         shoot = False
     else:
         shoot = True
@@ -74,9 +37,9 @@ def search(space):
         nonlocal best_way, best_bullet
         # because when we get the information about the environment, its bullets and invaders were changed,
         # we do the rest which is egg dropping
-        f, e = change_eggs(figure, eggs)
+        f, e = read_space.change_eggs(figure, eggs)
         # check if we reach the leaf then use the heuristic point to rate
-        if invaders == [] or check(f):
+        if invaders == [] or read_space.check(f):
             # this use to deal at the beginning of the game when we can't search for anything yet
             # since there are no eggs
             if path == []:
@@ -133,7 +96,7 @@ def search(space):
                 f_temp[h-1][temp_y] += 2
                 if (h-1, temp_y) not in e:
                     # if that actions don't lead to collision with an egg, we will go for it
-                    f_temp, i_temp, b_temp = change_bullets(f_temp, i_temp, b_temp)
+                    f_temp, i_temp, b_temp = read_space.change_bullets(f_temp, i_temp, b_temp)
                     dfs_visit(f_temp, i_temp, e, b_temp, temp_y, path + [move], can_shoot, temp_point)
     # call dfs from the root
     dfs_visit(figure, invaders_positions, eggs_positions, bullets_positions, ship_y, [], shoot, 0)

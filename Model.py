@@ -528,7 +528,7 @@ class GameModel(object):
 				
 				self._states.append(space.figure)
 				## Display each step
-				# space.show()
+				space.show()
 				
 				print('---'*10)
 

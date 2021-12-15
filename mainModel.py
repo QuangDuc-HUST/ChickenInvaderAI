@@ -1,5 +1,5 @@
 from Model import GameModel
-from LL import online ## Sourcecode: LL
+from LL_double_pram import search ## Sourcecode: LL
 from HD import local_search ## Sourcecode: HD
 
 ## Just be normal game, input
@@ -13,8 +13,7 @@ def main():
 	game.initialize(height=10, width=7, num=14)
 
 	## One time
-
-	# game.run(online,isOnline=True)
+	game.run(search,isOnline=True)
 	# game.run(getinput,isOnline=True)
 	# game.run(local_search, isOnline=True)
 	
@@ -22,10 +21,10 @@ def main():
 	# print(len(game.getActionsStatistic()))
 
 	##  Evaluatate multiple time
-	eva = game.getEvaluate()
+	'''eva = game.getEvaluate()
 
 	eva.evamultitime(local_search, True, 10)
-	eva.evamultitime(online, True, 10)
+	eva.evamultitime(online, True, 10)'''
 
 
 

@@ -242,7 +242,7 @@ def environment_initialize(height: int, width: int, num: int):
 
     """
     space = Space(height=height, width=width)
-    ship_y = np.random.randint(width)
+    ship_y = width//2
     space.spaceship = SpaceShip(x=height-1, y=ship_y, belong=space)
     invaders_initialize(space=space, num=num)
 
