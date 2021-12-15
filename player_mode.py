@@ -188,7 +188,6 @@ def online_play(game: 'GameModel'):
                             step = 0
     pygame.quit()
 
-<<<<<<< HEAD
 
 def main():
     game = GameModel()
@@ -196,5 +195,3 @@ def main():
 
     # online_play(game)
 main()
-=======
->>>>>>> 3ea0652c81396e29fb3c5da51bd89566fee5c4f3
