@@ -411,8 +411,8 @@ class Space(object):
 		for bullet in self.bullets:	
 			bullet.move()
 
-		for invader in self.invaders:
-			for bullet in self.bullets:
+		for invader in self.invaders.copy():
+			for bullet in self.bullets.copy():
 				if bullet.collide(invader):
 					self.bullets.remove(bullet)
 					self.invaders.remove(invader)

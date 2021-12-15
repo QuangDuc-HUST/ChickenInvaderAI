@@ -122,12 +122,15 @@ def online_play(game: 'GameModel'):
                 acting_possible_invaders.append(invader)
 
         if step % 3 == 1:
-            if len(acting_possible_invaders) > 3:
+            
+            if len(acting_possible_invaders) :
+                new_egg_number = np.random.randint(1, min([4,1+ len(acting_possible_invaders)]))
                 laying_invader = sorted(np.random.choice(
-                    range(len(acting_possible_invaders)), 3, replace=False))
+                    range(len(acting_possible_invaders)), new_egg_number, replace=False))
                 for i in laying_invader:
                     acting_possible_invaders[i].lay()
             else:
+                return
                 for i in acting_possible_invaders:
                     i.lay()
 

@@ -33,7 +33,7 @@ def nextSpace(space, action, isAgent):
     return newspace
 
 MAX_DEPTH = 4
-MAX_RANDOM = 3
+MAX_RANDOM = 2
 ACTIONS = ['w', 'a', 'd', 'remain']
 
 def getpositions(space):
@@ -70,6 +70,8 @@ def nearest_invader(space):
     '''
     ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
     min = space.width + 10
+    min = space.width * 2
+
     for invader in lstinvaders:
         temp = abs(invader[1] - ship[1])
         if temp < min:
@@ -110,7 +112,7 @@ def evaluate(space):
             return -float('inf')
 
     result = -nearest_invader(space)
-    result -= expected_chicken(space) * 1.5
+    result -= expected_chicken(space) * 5
 
 
 
