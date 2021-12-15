@@ -1,5 +1,6 @@
 from exception import *
 import numpy as np
+import os
 import timeit
 import copy
 import pickle
@@ -74,7 +75,8 @@ class Evaluate(object):
 
 	
 	def saveGame(self, filename):
-		with open(f'data\\{filename}_multi.pickle', 'wb') as f:
+		FILENAME = os.path.join('data', f'{filename}_multi.pickle')
+		with open(FILENAME, 'wb') as f:
 			pickle.dump(self._states, f)
 
 		print(f'Your data "{filename}_multi.pickle" has saved successfully in data folder')
@@ -412,8 +414,8 @@ class Space(object):
 		for bullet in self.bullets:	
 			bullet.move()
 
-		for invader in self.invaders:
-			for bullet in self.bullets:
+		for invader in self.invaders.copy():
+			for bullet in self.bullets.copy():
 				if bullet.collide(invader):
 					self.bullets.remove(bullet)
 					self.invaders.remove(invader)
