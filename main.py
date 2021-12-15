@@ -1,8 +1,8 @@
-from player_mode import online_play
+from playermode import online_play
 from Model import GameModel
-from LL import online  # Sourcecode: LL
-from HD import local_search  # Sourcecode: HD
-from QD import expectimax_getaction
+from algorithms.LL import online  # Sourcecode: LL
+from algorithms.HD import local_search  # Sourcecode: HD
+from algorithms.QD import expectimax_getaction
 
 # Just be normal game, input
 def getinput(space):
