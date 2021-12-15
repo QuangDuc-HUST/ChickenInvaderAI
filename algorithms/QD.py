@@ -30,7 +30,7 @@ def nextSpace(space, action, isAgent):
 
 MAX_DEPTH = 3
 MAX_RANDOM = 5
-ACTIONS = ['w', 'a', 'd', 'remain']
+ACTIONS = ['a', 'd', 'w', 'remain']
 
 def getpositions(space):
 

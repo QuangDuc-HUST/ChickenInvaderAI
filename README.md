@@ -6,42 +6,43 @@ An easier version of Chicken Invader game implemented in python 3 including simp
 
 
 Our game repository has three main parts:
-- GameModel: including the heart of the game (environments, agents) and evaluation system.
+- Model: including the heart of the game (environments, agents) and evaluation system.
+- Algorithms: guild of the agent (spaceship) to reach the goal.
 - Visualization: GUI of the game.
-- Algorithms to guild the agent (spaceship).
 
 Now we go to in the details.
 
-GameModel
+Model 
 ----
-Related files : `Model.py` , `mainModel.py`,  `exception.py`.
+Related files : `Model.py`.
+
+The full backend of this Chicken Invader game, you can start with GUI or without GUI.
 
 There are three sections in this part:
-1.  Environment:
+1.  Environment: Including spaceship agent, invaders (chickens), the space, eggs, bullets and actions of each object. 
 
-2.  Model:
+2.  Model: Including the logic, the procedure of the game (such as the order of action's agents)
 
-3.  Evaluate
-
-Visualization
------
-Related files: `player_mode.py` and `visualize_mode.py`.
-
-There are two modes of the GUI in this game:
-
-1.  
-
-2.  
+3.  Evaluation system: Evaluate the efficiency and effectiveness of each proposed algorithm.
 
 
 Algorithms
 -----
-Related folder: `Algorithms`\
-We use two algorithms: 
+Related folder: `algorithms`\
+We use two AI algorithms: 
 
-1.  
-2.  
+1.  Local search for agent.
+2.  Expectimax for agent.
 
+Visualization
+-----
+Related files: `visualization.py`.
+
+There are two modes of the GUI in this game:
+
+1.  Human mode : Get input from the keyboard in each turn of the spaceship.
+
+2.  Auto mode: The input is the series of actions of one of those above algorithms.
 
 Usage:
 ------
@@ -53,7 +54,7 @@ python -m pip install -r requirements.txt
 In here, we use two more additional packages `numpy` and `pygame`.
 
 ### Start a game
-See usage on `mainModel.py`
+See usage on `main.py`
 
 ### Examples:
 
@@ -67,9 +68,10 @@ Information in the report.
 
 Other files and folders
 -----
-`data` folder:                        
-`assets` folder:  
-`draft` folder:
+- `main` file: the full environment to play the game (control room).
+- `data` folder: saved folder for series of action in one game.                    
+- `assets` folder: images folder used for visualization.
+- `draft` folder: old files.
 
 
 
