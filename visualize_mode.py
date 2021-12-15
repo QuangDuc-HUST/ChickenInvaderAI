@@ -108,7 +108,6 @@ def display(list_data):
 # __LOAD DATA__
 
 if __name__ == '__main__':
-
     file_name = 'Testmulti_multi'
     with open(f'data\{file_name}.pickle', 'rb') as f:
         list_data = pickle.load(f)

@@ -11,7 +11,7 @@ def getinput(space):
 
 def main():
     game = GameModel()
-    game.initialize(height=9, width=7, num=14)
+    game.initialize(height=9 , width= 7, num=14)
 
     # One time
 
@@ -39,6 +39,7 @@ def main():
 
     eva.evamultitime(local_search, times= 15)
 
+    eva.evamultitime(expectimax_getaction, times= 5)
     # eva.evamultitime(online, 25)
     eva.saveGame('Testmulti')
 
