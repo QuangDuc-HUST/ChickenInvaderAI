@@ -104,7 +104,7 @@ class Node:
         # inverse the heap
         return self.h > other.h
 
-# A*
+
 def search(space):
     import copy
     import heapq
@@ -184,7 +184,7 @@ def search(space):
         # check if we reach the leaf
         if check(f):
             if len(map.m) == 1:
-                return 'w'
+                return 'd'
             else:
                 print(map.m)
                 return map.m[1]
@@ -193,7 +193,7 @@ def search(space):
             if map.m[-1] == 'w':
                 possible_moves = ['a', 'd']
             else:
-                possible_moves = ['a', 'w', 'd']
+                possible_moves = ['w', 'a', 'd']
             for move in possible_moves:
                 # make copies
                 f_temp = copy.deepcopy(f)
@@ -232,10 +232,8 @@ def search(space):
                 # if our move in this turn is better than that of the last one, which mean the ship move closer to the
                 # columns that contain invaders, it will get bonus points due to the appearance time.
                 if move_rating(f, map.ship_y, temp_y):
-                    temp_point += 11 - len(map.m)
+                    temp_point += 10 - len(map.m)
                 if (h - 1, temp_y) not in e:
                     # if that actions don't lead to collision with an egg, we will go for it
                     f_temp, i_temp, b_temp = change_bullets(f_temp, i_temp, b_temp)
                     heapq.heappush(A, Node(f_temp, temp_point, i_temp, e, b_temp, temp_y, temp_path + [move]))
-
-
