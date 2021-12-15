@@ -3,15 +3,25 @@ from Model import GameModel
 from algorithms.LL import online  # Sourcecode: LL
 from algorithms.HD import local_search  # Sourcecode: HD
 from algorithms.QD import expectimax_getaction
-# from argparse import ArgumentParser
 
-
-# Just be normal game, input
 def getinput(space):
+    '''
+    Normal game where gets input from the keyboard.
+    '''
     return input('Your next move is: ')
 
 
 def main():
+    '''
+    You must declare GameModel with its initilization of  height, width, number of chickens (9, 7, 14)
+
+    If you just play 'human model' then use online_play(game)
+
+    else:
+        You choose one algorithm to run by game.run(algorithm)
+        If you want to visualize your result of the algorthm. Save data by game.saveData(filename) then visualize_play(filename)
+    '''
+
     game = GameModel()
     game.initialize(height=9 , width= 7, num=14)
 

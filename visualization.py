@@ -5,6 +5,7 @@ import pickle
 import numpy as np
 from Model import GameModel
 
+
 def online_play(game: 'GameModel'):
     Grey, Red = (100, 100, 100), (255, 0, 0)
     unit = 60
@@ -190,7 +191,6 @@ def online_play(game: 'GameModel'):
                         if playback_step == len(game._states):
                             playback_step = 0
     pygame.quit()
-
 
 def visualize_play(filename):
 

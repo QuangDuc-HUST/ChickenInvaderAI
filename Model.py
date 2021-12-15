@@ -430,6 +430,7 @@ class Space(object):
 		'''
 		for egg in self.eggs.copy():
 				egg.drop()
+
 				
 class GameModel(object):
 	'''
