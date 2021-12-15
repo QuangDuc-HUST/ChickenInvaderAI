@@ -8,7 +8,7 @@ White, Grey = (255, 255, 255), (100, 100, 100)
 
 # __SET UP__
 unit = 60
-size = (7, 9)
+size = (7, 10)
 screen_width = unit*size[0]
 screen_height = unit*size[1]
 screen = pygame.display.set_mode((screen_width, screen_height))
