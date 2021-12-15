@@ -11,14 +11,14 @@ def getinput(space):
 
 def main():
     game = GameModel()
-    game.initialize(height=9, width=7, num=14)
+    game.initialize(height=9 , width= 7, num=14)
 
     # One time
 
     # game.run(local_search)
-    game.run(online)
+    # game.run(online)
     # game.run(getinput)
-    # game.run(expectimax_getaction)
+    game.run(expectimax_getaction)
     # online_play(game)
     # game.run(testinputOffline)
     # game.run(testAsearch)
