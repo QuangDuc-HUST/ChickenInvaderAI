@@ -597,7 +597,8 @@ class GameModel(object):
 		save data in pickle file in data
 		name = filename + currenttime 
 		'''
-		with open(os.path.join('data', filename), 'wb') as f:
+		FILENAME = os.path.join('data', f'{filename}.pickle')
+		with open(FILENAME, 'wb') as f:
 			pickle.dump(self.getStatesStatistic(), f)
 
-		print(f'Your data "{filename}" has saved successfully in data folder')
+		print(f'Your data "{filename}.pickle" has saved successfully in data folder')

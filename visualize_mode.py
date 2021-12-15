@@ -111,9 +111,9 @@ def display(list_data):
 
 if __name__ == '__main__':
 
-    file_name = 'Testmulti1_multi'
+    file_name = 'Test'
     with open(os.path.join('data', f'{file_name}.pickle'), 'rb') as f:
         list_data = pickle.load(f)
 
     # print(list_data[6])
-    display(list_data[1])
+    display(list_data)
