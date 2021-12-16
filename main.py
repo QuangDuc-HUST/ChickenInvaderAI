@@ -1,6 +1,6 @@
 from visualization import online_play, visualize_play
 from Model import GameModel
-from algorithms.LL import online  # Sourcecode: LL
+from algorithms.LL import a_star_search  # Sourcecode: LL
 from algorithms.HD import local_search  # Sourcecode: HD
 from algorithms.QD import expectimax_getaction
 
@@ -30,7 +30,7 @@ def main():
     # game.run(local_search)
     # game.run(getinput)
     # game.run(online)
-    game.run(expectimax_getaction)
+    game.run(a_star_search)
     # online_play(game)
 
     # __SAVE DATA__
