@@ -56,14 +56,14 @@ def a_star_search(space):
         column = [figure[t][current_y] for t in range(h)]
         # if this column has invaders that need to be killed, we shoot and get points
         if column.count(1) >= column.count(7) + column.count(11):
-            point += 2 * (10 - len(environment_simulator.m))
+            point += 2 * (10 - len(state.m))
             # we prefer to kill invaders in the column that has 2 of them to kill invaders in the column that has only
             # 1 invader to avoid bad situations
             if column.count(1) == 2 and column.count(7) + column.count(11) == 1:
-                point += 99 * (10 - len(environment_simulator.m))
+                point += 99 * (10 - len(state.m))
         # otherwise we lose some points
         else:
-            point -= 10 - len(environment_simulator.m)
+            point -= 10 - len(state.m)
         return point
     # 2.Making better move
     # If our move in this turn is better than that of the last one, which mean the ship move closer to the
@@ -126,19 +126,19 @@ def a_star_search(space):
     # the heap will keep track of the state that has the highest heuristic
     while True:
         # pop the best state
-        environment_simulator = heapq.heappop(A)
+        state = heapq.heappop(A)
         # because when we get the information about the environment, its bullets and invaders were changed,
         # we do the rest which is egg dropping
-        f, e = change_eggs(environment_simulator.f, environment_simulator.e)
+        f, e = change_eggs(state.f, state.e)
         # check if we reach the leaf
         if check(f):
-            if len(environment_simulator.m) == 1:
-                return 'w' if environment_simulator.m[0] == 'a or d' else 'a'
+            if len(state.m) == 1:
+                return 'w' if state.m[0] == 'a or d' else 'a'
             else:
-                return environment_simulator.m[1]
+                return state.m[1]
         else:
             # if we shot in the previous turn, this turn we should not shoot cuz it makes no senses
-            if environment_simulator.m[-1] == 'w':
+            if state.m[-1] == 'w':
                 possible_moves = ['a', 'd', 'remain']
             else:
                 possible_moves = ['w', 'a', 'd']
@@ -146,31 +146,31 @@ def a_star_search(space):
                 # make copies
                 # temp stands for temporary
                 f_temp = copy.deepcopy(f)
-                i_temp = copy.deepcopy(environment_simulator.i)
-                b_temp = copy.deepcopy(environment_simulator.b)
-                temp_point = environment_simulator.h
-                temp_path = environment_simulator.m
+                i_temp = copy.deepcopy(state.i)
+                b_temp = copy.deepcopy(state.b)
+                temp_point = state.h
+                temp_path = state.m
                 if move == 'a':
-                    if environment_simulator.ship_y - 1 == -1:
+                    if state.ship_y - 1 == -1:
                         continue
-                    temp_y = environment_simulator.ship_y - 1
+                    temp_y = state.ship_y - 1
                     # temp_point += move_rating(f_temp, map.ship_y, temp_y)
                 elif move == 'd':
-                    if environment_simulator.ship_y + 1 == w:
+                    if state.ship_y + 1 == w:
                         continue
-                    temp_y = environment_simulator.ship_y + 1
+                    temp_y = state.ship_y + 1
                     # temp_point += move_rating(f_temp, map.ship_y, temp_y)
                 else:
-                    temp_y = environment_simulator.ship_y
+                    temp_y = state.ship_y
                     if move == 'w':
-                        f_temp[h - 2][environment_simulator.ship_y] += 7
-                        b_temp.append((h - 2, environment_simulator.ship_y))
-                        temp_point = heuristic1(f_temp, environment_simulator.ship_y, temp_point)
+                        f_temp[h - 2][state.ship_y] += 7
+                        b_temp.append((h - 2, state.ship_y))
+                        temp_point = heuristic1(f_temp, state.ship_y, temp_point)
                     # change variable to make sure it cant shoot in the next step ( like the environment )
                 # move the ship in the grid
-                f_temp[h - 1][environment_simulator.ship_y] -= 2
+                f_temp[h - 1][state.ship_y] -= 2
                 f_temp[h - 1][temp_y] += 2
-                temp_point = heuristic2(f_temp, environment_simulator.ship_y, temp_y, environment_simulator.m,
+                temp_point = heuristic2(f_temp, state.ship_y, temp_y, state.m,
                                         temp_point)
                 if (h - 1, temp_y) not in e:
                     # if that actions don't lead to collision with an egg, we will go for it
