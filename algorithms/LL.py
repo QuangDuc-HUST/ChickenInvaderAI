@@ -1,93 +1,5 @@
-# no searching, quite similar to model-based
-def online(space):
-    def possible(x, y):
-        # possible places mean that we can reach it within next few moves
-        nonlocal space
-        return abs(y - space.spaceship.y) <= space.spaceship.x - x
-
-    def not_enough_bullets():
-        nonlocal space
-        no_of_invaders = len([i for i in space.invaders if i.y == space.spaceship.y])
-        no_of_bullets = len([i for i in space.bullets if i.y == space.spaceship.y])
-        return no_of_bullets < no_of_invaders
-
-    def can_move_left():
-        nonlocal space
-        return space.spaceship.y - 1 >= 0 and space.figure[space.spaceship.x - 1][space.spaceship.y - 1] != 4
-
-    def can_move_right():
-        nonlocal space
-        return space.spaceship.y + 1 <= space.width - 1 and space.figure[space.spaceship.x - 1][space.spaceship.y + 1] != 4
-
-    def has_invaders(y):
-        nonlocal space
-        return y in [i.y for i in space.invaders]
-
-    def action():
-        nonlocal space
-        # because in each rows there always exists some blanks for the ship to stay
-        # so we will check the best blank position to move
-
-        # find nearest row that has eggs
-        nearest_row = None
-        for i in range(1, space.height):
-            if 4 in list(space.figure[space.spaceship.x - i]):
-                nearest_row = space.spaceship.x - i
-                break
-        else:
-            return 'w'
-        # find the blank positions in this row
-        blank_positions = [i for i in range(space.width) if space.figure[nearest_row][i] not in [4, 11]]
-
-        # also make a list of dangerous places for later purposes
-        danger = [i for i in range(space.width) if i not in blank_positions]
-        # then sort the lists in the order of the distance from horizontal position of the ship to each of them
-        blank_positions = sorted(blank_positions, key=lambda x: abs(x - space.spaceship.y))
-        danger = sorted(danger, key=lambda x: abs(x - space.spaceship.y))
-
-        # now we check if we are in the safe position or not
-        # if we are safe, we will try to look for the next closest possible place that has better value in case there
-        # are no invaders in front of us which may only happen with low probability or just stay in there
-        # else we will move to the safe position
-
-        if space.spaceship.y in blank_positions:
-            if space.spaceship.y in [i.y for i in space.invaders] and not_enough_bullets():
-                # shoot them
-                return 'w'
-            else:
-                # now we will find the next closet possible position
-                for i in blank_positions[1:]:
-                    if possible(nearest_row, i) and has_invaders(i):
-                        # determine to go left or right depends on this position
-                        if i > space.spaceship.y and can_move_right():
-                            return 'd'
-                        elif i < space.spaceship.y and can_move_left():
-                            return 'a'
-                # else we have to try some threatening moves if we want to win the game
-                else:
-                    for i in danger:
-                        if has_invaders(i):
-                            if i > space.spaceship.y and can_move_right():
-                                return 'd'
-                            elif i < space.spaceship.y and can_move_left():
-                                return 'a'
-                    return 'w'
-        else:
-            # in here we can check whether it is necessary to move now
-            # if not, we can shoot
-            if abs(space.spaceship.y - blank_positions[0]) < space.spaceship.x - nearest_row:
-                return 'w'
-
-            # move to the safe place if work calls for it
-            if blank_positions[0] > space.spaceship.y and can_move_right():
-                return 'd'
-            elif blank_positions[0] < space.spaceship.y and can_move_left():
-                return 'a'
-            return 'w'
-
-    return action()
-
-
+import copy
+import heapq
 
 
 class Node:
@@ -105,9 +17,7 @@ class Node:
         return self.h > other.h
 
 
-def search(space):
-    import copy
-    import heapq
+def a_star_search(space):
     # changing environment function
     # eggs dropping
 
@@ -135,26 +45,58 @@ def search(space):
                     next_bullet.append((x - 2, y))
 
         return figure, [(x, y) for x, y in invaders if figure[x][y] == 1], next_bullet
-    # rating function
+    # heuristic functions
 
-    def move_rating(f1, previous_move, move):
+    # 1.Success of bullet
+    # a bullet is considered to be a good one is the bullet that will kill a invaders in the future
+    # if it is a efficient action, it will get points depends on the time that the bullet is shot
+    # the sooner it is shot, the larger the points
+    # otherwise, it will loose points in the same way
+    def heuristic1(figure, current_y, point):
+        column = [figure[t][current_y] for t in range(h)]
+        # if this column has invaders that need to be killed, we shoot and get points
+        if column.count(1) >= column.count(7) + column.count(11):
+            point += 2 * (10 - len(map.m))
+            # we prefer to kill invaders in the column that has 2 of them to kill invaders in the column that has only
+            # 1 invader to avoid bad situations
+            if column.count(1) == 2 and column.count(7) + column.count(11) == 1:
+                point += 99 * (10 - len(map.m))
+        # otherwise we lose some points
+        else:
+            point -= 10 - len(map.m)
+        return point
+    # 2.Making better move
+    # If our move in this turn is better than that of the last one, which mean the ship move closer to the
+    # columns that contain invaders, it will get bonus points due to the appearance time.
+    # As i said before, we always want to kill invaders in column that has 2 of them so we tend to move to these columns
+    # rather than the others
+
+    def heuristic2(figure, previous_move, current_move, actions, point):
         invaders_columns = []
+        # find the maximum number of invaders in 1 column
         max_invaders = 0
         for i in range(w):
-            col = [f1[k][i] for k in range(h)]
+            col = [figure[k][i] for k in range(h)]
             t = col.count(1) - col.count(7) - col.count(11)
             if t > max_invaders:
                 max_invaders = t
 
         for i in range(w):
-            col = [f1[k][i] for k in range(h)]
+            col = [figure[k][i] for k in range(h)]
+            # looking for columns that has maximum invaders
             if col.count(1) == col.count(7) + col.count(11) + max_invaders:
                 invaders_columns.append(i)
         try:
-            return min([abs(move - k) for k in invaders_columns]) <= min([abs(previous_move - k) for k in
-                                                                          invaders_columns])
+            # return True if the current action can lead the ship closer to the column
+            good_move = min([abs(current_move - k) for k in invaders_columns]) <= min([abs(previous_move - k) for k in
+                                                                                       invaders_columns])
         except ValueError:
-            return False
+            good_move = False
+
+        if good_move:
+            return point + 9 - len(actions)
+        else:
+            return point - 9 + len(actions)
 
     # checking if we reach the leaf of tree function
 
@@ -193,8 +135,6 @@ def search(space):
             if len(map.m) == 1:
                 return 'w' if map.m[0] == 'a or d' else 'a'
             else:
-                print(map.m)
-                print(map.h)
                 return map.m[1]
         else:
             # if we shot in the previous turn, this turn we should not shoot cuz it makes no senses
@@ -204,6 +144,7 @@ def search(space):
                 possible_moves = ['w', 'a', 'd']
             for move in possible_moves:
                 # make copies
+                # temp stands for temporary
                 f_temp = copy.deepcopy(f)
                 i_temp = copy.deepcopy(map.i)
                 b_temp = copy.deepcopy(map.b)
@@ -224,28 +165,12 @@ def search(space):
                     if move == 'w':
                         f_temp[h - 2][map.ship_y] += 7
                         b_temp.append((h - 2, map.ship_y))
-                        # success of bullet
-                        # a bullet is considered to be a good one is the bullet that will kill a invaders in the future
-                        # if it is a efficient action, it will get points depends on the time that the bullet is shot
-                        # the sooner it is shot, the larger the points
-                        # otherwise, it will loose points in the same way
-                        column = [f_temp[t][map.ship_y] for t in range(h)]
-                        if column.count(1) >= column.count(7) + column.count(11):
-                            temp_point += 2 * (10 - len(map.m))
-                            if column.count(1) == 2 and column.count(7) + column.count(11) == 1:
-                                temp_point += 99 * (10 - len(map.m))
-                        else:
-                            temp_point -= 10 - len(map.m)
+                        temp_point = heuristic1(f_temp, map.ship_y, temp_point)
                     # change variable to make sure it cant shoot in the next step ( like the environment )
                 # move the ship in the grid
                 f_temp[h - 1][map.ship_y] -= 2
                 f_temp[h - 1][temp_y] += 2
-                # if our move in this turn is better than that of the last one, which mean the ship move closer to the
-                # columns that contain invaders, it will get bonus points due to the appearance time.
-                if move_rating(f, map.ship_y, temp_y):
-                    temp_point += (9 - len(map.m))
-                else:
-                    temp_point -= 9 - len(map.m)
+                temp_point = heuristic2(f_temp, map.ship_y, temp_y, map.m, temp_point)
                 if (h - 1, temp_y) not in e:
                     # if that actions don't lead to collision with an egg, we will go for it
                     f_temp, i_temp, b_temp = change_bullets(f_temp, i_temp, b_temp)
