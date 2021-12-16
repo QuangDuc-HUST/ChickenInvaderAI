@@ -27,7 +27,7 @@ The full backend of this Chicken Invader game, you can start with GUI or without
 There are three sections in this part:
 1.  Environment: Including spaceship agent, invaders (chickens), the space, eggs, bullets and actions of each object. 
 
-2.  Model: Including the logic, the procedure of the game (such as the order of action's agents)
+2.  Model: Including the logic, the procedure of the game (such as the order of action's agents).
 
 3.  Evaluation system: Evaluate the efficiency and effectiveness of each proposed algorithm.
 
@@ -49,6 +49,8 @@ There are two modes of the GUI in this game:
 1.  Human mode : Get input from the keyboard in each turn of the spaceship.
 
 2.  Auto mode: The input is the series of actions of one of those above algorithms.
+
+Note: in each mode, we also have 'play back' mode so as to watch what happened.
 
 Usage:
 ------

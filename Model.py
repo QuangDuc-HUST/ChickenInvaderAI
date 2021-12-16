@@ -82,7 +82,7 @@ class Evaluate(object):
 		with open(FILENAME, 'wb') as f:
 			pickle.dump(self._states, f)
 
-		print(f'Your data "{filename}_multi.pickle" has saved successfully in data folder')
+		print(f'Your data "{filename}_multi.pickle" has been saved successfully in data folder')
 
 
 class Object(object):
@@ -602,4 +602,4 @@ class GameModel(object):
 		with open(FILENAME, 'wb') as f:
 			pickle.dump(self.getStatesStatistic(), f)
 
-		print(f'Your data "{filename}.pickle" has saved successfully in data folder')
+		print(f'Your data "{filename}.pickle" has been saved successfully in data folder')

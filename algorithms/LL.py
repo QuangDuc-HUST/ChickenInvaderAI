@@ -51,7 +51,7 @@ def a_star_search(space):
     # a bullet is considered to be a good one is the bullet that will kill a invaders in the future
     # if it is a efficient action, it will get points depends on the time that the bullet is shot
     # the sooner it is shot, the larger the points
-    # otherwise, it will loose points in the same way
+    # otherwise, it will lose points in the same way
     def heuristic1(figure, current_y, point):
         column = [figure[t][current_y] for t in range(h)]
         # if this column has invaders that need to be killed, we shoot and get points
@@ -119,7 +119,7 @@ def a_star_search(space):
         previous_state = ['w']
     else:
         previous_state = ['a or d']
-    # creat list for heap using
+    # create list for heap using
     A = []
     # push the current states to the heap
     heapq.heappush(A, Node(figure, 0, invaders_positions, eggs_positions, bullets_positions, ship_y, previous_state))

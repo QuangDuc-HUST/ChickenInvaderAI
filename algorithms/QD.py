@@ -40,7 +40,6 @@ def getpositions(space):
     lsteggs = [x.get_position() for x in space.eggs]
     return ship, lstbullets, lstinvaders, lsteggs
 
-
 def get_legal_actions(space):
     '''
     return lst of legal actions
@@ -89,7 +88,6 @@ def top_egg(space):
         #         num += 1
     return num
 
-
 def expected_chicken(space):
     '''
     return the number of real chicken
@@ -132,14 +130,12 @@ def evaluate(space):
 
     return result
 
-
 def expectimax_getaction(space):
     '''
     return an action else remain
     '''
     score, actions = maxValue(space, 0)
     return actions[0] if len(actions) > 0 else 'remain'
-
 
 def maxValue(space, depth):
     '''
@@ -182,8 +178,3 @@ def expectedValue(space, depth):
         expected_score += score / rd
 
     return expected_score , []
-    
-
-
-if __name__ == '__main__':
-    print('Hello')

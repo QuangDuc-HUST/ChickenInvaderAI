@@ -29,11 +29,11 @@ def main():
     
     # online_play(game)
     # game.run(local_search)
-    # game.run(getinput)
-    game.run(a_star_search)
+    game.run(getinput)
+    # game.run(a_star_search)
 
     # __SAVE DATA__
-    game.saveData('Test')
+    # game.saveData('Test')
 
     ## Evaluatate multiple time
     # eva = game.getEvaluate()
