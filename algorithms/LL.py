@@ -100,7 +100,7 @@ def a_star_search(space):
 
     # checking if we reach the leaf of tree function
 
-    def check(f1):
+    def no_eggs_in_space(f1):
         for i in range(len(f1)):
             for j in range(len(f1[i])):
                 if f1[i][j] in [4, 11]:
@@ -131,7 +131,7 @@ def a_star_search(space):
         # we do the rest which is egg dropping
         f, e = change_eggs(state.f, state.e)
         # check if we reach the leaf
-        if check(f):
+        if no_eggs_in_space(f):
             if len(state.m) == 1:
                 return 'w' if state.m[0] == 'a or d' else 'a'
             else:
