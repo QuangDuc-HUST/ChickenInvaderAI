@@ -1,4 +1,4 @@
-Chicken Invader Project Artificial Intellegence 2021
+Chicken Invader Project -  Artificial Intellegence 2021
 =========
 Overview
 ---------
@@ -57,8 +57,17 @@ In here, we use two more additional packages `numpy` and `pygame`.
 See usage on `main.py`
 
 ### Examples:
+```
+main.py
 
 
+# Declare the game model
+game = GameModel()
+# Initilize the game with height = 9, width = 7, num of chicken = 14
+game.initialize(height=9 , width= 7, num=14)
+# Choose the algorithm to perform (E.g local search)
+game.run(local_search)
+```
 
 
 Game rule
@@ -68,7 +77,8 @@ Information in the report.
 
 Other files and folders
 -----
-- `main` file: the full environment to play the game (control room).
+- `main.py` file: the full environment to play the game (control room).
+- `exception.py` file: Including some exception class related to  the game.
 - `data` folder: saved folder for series of action in one game.                    
 - `assets` folder: images folder used for visualization.
 - `draft` folder: old files.
