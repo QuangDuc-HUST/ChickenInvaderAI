@@ -194,11 +194,11 @@ def online_play(game: 'GameModel'):
 
 def visualize_play(filename):
 
+    ## Get input file
+    
     with open(os.path.join('data', f'{filename}.pickle'), 'rb') as f:
         list_data = pickle.load(f)
-    
-    print('Hello')
-
+        
     # __COLOR__
     White, Grey = (255, 255, 255), (100, 100, 100)
     # Black, Red, Blue, Yellow = (0, 0, 0), (255, 0, 0), (0, 0, 255), (250, 200, 0)
@@ -274,12 +274,12 @@ def visualize_play(filename):
                             (i * unit, screen_height-unit))
         for i in range(1, size[1]):
             pygame.draw.line(screen, Grey, (0, i * unit), (screen_width, i * unit))
+        
+        pygame.display.update()
 
-    ## Get input file
     
+        
 
-
-    pygame.display.update()
     pygame.init()
     pygame.font.init()
     step = 0
@@ -304,9 +304,9 @@ def visualize_play(filename):
     pygame.quit()
 
 
-# if __name__ == '__main__':
-#     game = GameModel()
-#     game.initialize(height=9, width=7, num=14)
-#     online_play(game)
+if __name__ == '__main__':
+    game = GameModel()
+    game.initialize(height=9, width=7, num=14)
+    online_play(game)
 
-#     # visualize_play('Test')
+    # visualize_play('Test')

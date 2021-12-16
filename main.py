@@ -26,12 +26,11 @@ def main():
     game.initialize(height=9 , width= 7, num=14)
 
     # One time
+    
     # online_play(game)
     # game.run(local_search)
     # game.run(getinput)
-    # game.run(online)
     game.run(a_star_search)
-    # online_play(game)
 
     # __SAVE DATA__
     game.saveData('Test')
