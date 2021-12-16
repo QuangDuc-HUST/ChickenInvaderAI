@@ -305,8 +305,8 @@ def visualize_play(filename):
 
 
 if __name__ == '__main__':
-    # game = GameModel()
-    # game.initialize(height=9, width=7, num=14)
-    # online_play(game)
+    game = GameModel()
+    game.initialize(height=9, width=7, num=14)
+    online_play(game)
 
-    visualize_play('Test')
+    # visualize_play('Test')

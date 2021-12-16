@@ -1,5 +1,11 @@
 Chicken Invader Project -  Artificial Intellegence 2021
 =========
+
+<p align="center">
+  <img src="https://i.ibb.co/z7dFmf2/Intro-1.png" />
+</p>
+
+
 Overview
 ---------
 An easier version of Chicken Invader game implemented in python 3 including simple GUI for visualization and enjoyment.
