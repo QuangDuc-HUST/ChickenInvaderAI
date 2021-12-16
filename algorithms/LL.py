@@ -170,7 +170,8 @@ def a_star_search(space):
                 # move the ship in the grid
                 f_temp[h - 1][environment_simulator.ship_y] -= 2
                 f_temp[h - 1][temp_y] += 2
-                temp_point = heuristic2(f_temp, environment_simulator.ship_y, temp_y, environment_simulator.m, temp_point)
+                temp_point = heuristic2(f_temp, environment_simulator.ship_y, temp_y, environment_simulator.m,
+                                        temp_point)
                 if (h - 1, temp_y) not in e:
                     # if that actions don't lead to collision with an egg, we will go for it
                     f_temp, i_temp, b_temp = change_bullets(f_temp, i_temp, b_temp)
