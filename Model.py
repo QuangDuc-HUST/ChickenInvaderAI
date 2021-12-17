@@ -414,7 +414,7 @@ class Space(object):
 		'''
 		Update bullets move for the game
 		'''
-		for bullet in self.bullets:	
+		for bullet in self.bullets.copy():	
 			bullet.move()
 
 		for invader in self.invaders.copy():
