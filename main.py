@@ -4,6 +4,7 @@ from algorithms.LL import a_star_search  # Sourcecode: LL
 from algorithms.HD import local_search  # Sourcecode: HD
 from algorithms.QD import expectimax_getaction
 
+
 def getinput(space):
     '''
     Normal game where gets input from the keyboard.
@@ -23,7 +24,7 @@ def main():
     '''
 
     game = GameModel()
-    game.initialize(height=9 , width= 7, num=14)
+    game.initialize(height=9, width=7, num=14)
 
     # One time
     
