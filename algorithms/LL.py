@@ -114,11 +114,10 @@ def a_star_search(space):
     ship_x, ship_y = space.spaceship.x, space.spaceship.y
     w, h = space.width, space.height
     # check whether the ship shoot before
-    # if it just fired, we can't should right now, we have to wait until the next step to fire
     if figure[ship_x - 3][ship_y] in [7, 11]:
         previous_state = ['w']
     else:
-        previous_state = ['a or d']
+        previous_state = ['a or d or remain']
     # create list for heap using
     A = []
     # push the current states to the heap
@@ -133,7 +132,7 @@ def a_star_search(space):
         # check if we reach the leaf
         if no_eggs_in_space(f):
             if len(state.m) == 1:
-                return 'w' if state.m[0] == 'a or d' else 'a'
+                return 'w' if state.m[0] == 'a or d or remain' else 'a'
             else:
                 return state.m[1]
         else:
