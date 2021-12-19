@@ -18,6 +18,12 @@ class Node:
 
 
 def a_star_search(space):
+    ###########
+    cost_of_shooting_success_bullets = 2
+    cost_of_shooting_failed_bullets = -1
+    cost_of_shooting_success_bullets_that_kill_invaders_in_1st_layer = 99
+    cost_of_good_moves = 1
+    cost_of_bad_moves = -1
     # changing environment function
     # eggs dropping
 
@@ -56,14 +62,14 @@ def a_star_search(space):
         column = [figure[t][current_y] for t in range(h)]
         # if this column has invaders that need to be killed, we shoot and get points
         if column.count(1) >= column.count(7) + column.count(11):
-            point += 2 * (10 - len(state.m))
+            point += cost_of_shooting_success_bullets * (10 - len(state.m))
             # we prefer to kill invaders in the column that has 2 of them to kill invaders in the column that has only
             # 1 invader to avoid bad situations
             if column.count(1) == 2 and column.count(7) + column.count(11) == 1:
-                point += 99 * (10 - len(state.m))
+                point += cost_of_shooting_success_bullets_that_kill_invaders_in_1st_layer * (10 - len(state.m))
         # otherwise we lose some points
         else:
-            point -= 10 - len(state.m)
+            point += cost_of_shooting_failed_bullets * (10 - len(state.m))
         return point
     # 2.Making better move
     # If our move in this turn is better than that of the last one, which mean the ship move closer to the
@@ -94,9 +100,9 @@ def a_star_search(space):
             good_move = False
 
         if good_move:
-            return point + 9 - len(actions)
+            return point + cost_of_good_moves * (9 - len(actions))
         else:
-            return point - 9 + len(actions)
+            return point + cost_of_bad_moves * (9 + len(actions))
 
     # checking if we reach the leaf of tree function
 

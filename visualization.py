@@ -198,6 +198,7 @@ def visualize_play(filename):
     
     with open(os.path.join('data', f'{filename}.pickle'), 'rb') as f:
         list_data = pickle.load(f)
+    
         
     # __COLOR__
     White, Grey = (255, 255, 255), (100, 100, 100)
