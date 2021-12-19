@@ -2,7 +2,6 @@ import copy
 
 #Auxiliary function
 def nextSpace(space, action, isAgent):
-
     newspace = copy.deepcopy(space)
 
     if isAgent:
@@ -29,7 +28,7 @@ def nextSpace(space, action, isAgent):
     return newspace
 
 MAX_DEPTH = 3
-MAX_RANDOM = 5
+MAX_RANDOM = 3
 ACTIONS = ['a', 'd', 'w', 'remain']
 
 def getpositions(space):
@@ -121,10 +120,10 @@ def evaluate(space):
 
     for egg in lsteggs:
         if egg == ship:
-            result -= 4*space.width
+            result -=  4* space.width ## Die or not
 
+    result -= expected_chicken(space) * 3 ## 
     result -= nearest_invader(space)
-    result -= expected_chicken(space) * 3
     result -= 2 * top_egg(space)
 
 

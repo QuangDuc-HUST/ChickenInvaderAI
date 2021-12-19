@@ -101,6 +101,9 @@ def left_safe(space: 'Space'):
 	return False
 
 def right_safe(space: 'Space'):
+	'''
+	asasda sd
+	'''
 	ship_x, ship_y = space.spaceship.get_position()
 	fig = space.figure.copy()
 	if ship_y != space.width -1: 
@@ -129,7 +132,6 @@ def threaten(space:'Space'):
 	'''
 	is a threaten occurs?
 	'''
-
 
 def copy_space(space:'Space'):
 	child_space = Space(space.height, space.width)
@@ -173,6 +175,7 @@ def ship_eggs_rel(space: 'Space'):
 	return False
 
 def nearest_invader(space:'Space'):
+	
 	loc = []
 	for i in range(len(space.invaders)):
 		loc.append(abs(space.spaceship.y - space.invaders[i].y))

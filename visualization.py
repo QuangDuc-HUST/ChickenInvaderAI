@@ -311,3 +311,4 @@ if __name__ == '__main__':
     # online_play(game)
 
     visualize_play('Test')
+    # online_play(game)
