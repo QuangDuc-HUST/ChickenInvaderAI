@@ -1,3 +1,8 @@
+#
+#
+#main.py : running game
+#
+#
 from visualization import online_play, visualize_play
 from Model import GameModel
 from algorithms.LL import a_star_search  # Sourcecode: LL
