@@ -1,3 +1,9 @@
+#
+#
+#Visualize the game by get input as pickle file
+#For more information, you can go to README.md
+#
+#
 import pygame
 import os
 import copy
