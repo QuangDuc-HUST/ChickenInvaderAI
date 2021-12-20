@@ -1,7 +1,7 @@
 from visualization import online_play, visualize_play
 from Model import GameModel
 from algorithms.LL import a_star_search  # Sourcecode: LL
-from algorithms.HD import local_search  # Sourcecode: HD
+from HD import greedy_search  # Sourcecode: HD
 from algorithms.QD import expectimax_getaction
 
 def getinput(space):
@@ -30,7 +30,8 @@ def main():
     # online_play(game)
     # game.run(local_search)
     # game.run(getinput)
-    # game.run(a_star_search)
+    # game.run(greedy
+    # _search)
     # game.run(expectimax_getaction)
 
     # __SAVE DATA__
@@ -39,11 +40,11 @@ def main():
     ## Evaluatate multiple time
     eva = game.getEvaluate()
 
-    # eva.evamultitime(local_search, times= 100)
-    # eva.evamultitime(expectimax_getaction, times= 100)
-    eva.evamultitime(a_star_search, 25)
+    # eva.evamultitime(greedy_search, times= 50)
+    eva.evamultitime(expectimax_getaction, times= 5)
+    # eva.evamultitime(a_star_search, 25)
 
-    eva.saveGame('Testmulti1')
+    eva.saveGame('Test')
 
 
 if __name__ == '__main__':
