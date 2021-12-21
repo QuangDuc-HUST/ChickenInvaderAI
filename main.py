@@ -49,9 +49,9 @@ def main():
     ## Evaluatate multiple time
     eva = game.getEvaluate()
 
-    # eva.evamultitime(greedy_search, times= 50)
+    eva.evamultitime(greedy_search, times= 50)
     # eva.evamultitime(expectimax_getaction, times= 5)
-    eva.evamultitime(a_star_search, 25)
+    # eva.evamultitime(a_star_search, 25)
 
     eva.saveGame('Test')
 

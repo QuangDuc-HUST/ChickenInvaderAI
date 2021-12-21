@@ -1,8 +1,8 @@
 import copy
 import numpy as np
-from Model import *
+# from Model import *
 
-def greedy_search(space:'Space') -> (str):
+def greedy_search(space) -> (str):
 	"""
 	return a direction w/a/d/remain which has minimum heuristic value
 	"""
@@ -10,7 +10,7 @@ def greedy_search(space:'Space') -> (str):
 	return pos_actions[0][0]
 
 
-def possible_acitons(space:'Space') -> (list):
+def possible_acitons(space) -> (list):
 	"""
 	return list of possible actions sorted by heuristic function
 	"""
@@ -34,7 +34,7 @@ def possible_acitons(space:'Space') -> (list):
 	pos_actions.sort(key=(lambda x:(x[1][0], x[1][1]) ))
 	return pos_actions
 
-def heuristic(space:'Space', act:'str') :
+def heuristic(space, act:'str') :
 	'''
 	return heuristic value of action act
 	'''
@@ -55,7 +55,7 @@ def heuristic(space:'Space', act:'str') :
 	return h+ g, nearest_invader
 
 
-def nearest_zero(space:'Space', i:int) -> (int):
+def nearest_zero(space, i:int) -> (int):
 	"""
 	find nearest hole which ship can stay there to avoid egg after i steps
 	return an int"""
@@ -68,7 +68,7 @@ def nearest_zero(space:'Space', i:int) -> (int):
 	# print(f'nearest 0 of {i} row above is {ret}')
 	return ret
 
-def dangerous_state(space:'Space') -> (bool):
+def dangerous_state(space) -> (bool):
 	"""
 	return True if the current state is dangerous for ship
 	False otherwise.
