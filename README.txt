@@ -1,9 +1,7 @@
 Chicken Invaders Project -  Artificial Intellegence 2021
 =========
 
-<p align="center">
-  <img src="https://i.ibb.co/z7dFmf2/Intro-1.png" />
-</p>
+In-game image: "https://i.ibb.co/z7dFmf2/Intro-1.png" 
 
 
 Overview
@@ -15,6 +13,7 @@ Our game repository has three main parts:
 - Model: including the heart of the game (environments, agents) and evaluation system.
 - Algorithms: guild of the agent (spaceship) to reach the goal.
 - Visualization: GUI of the game.
+
 
 Now we go to in the details.
 
@@ -34,7 +33,7 @@ There are three sections in this part:
 
 Algorithms
 -----
-Related folder: `algorithms`\
+Related folder: `algorithms`
 We use two AI algorithms: 
 
 1.  A star search for agent.
@@ -56,15 +55,18 @@ Usage:
 ------
 ### Installation
 Dependences:  `requirements.txt`. Go to the main folder then type
+
 ```
 python -m pip install -r requirements.txt
 ```
+
 In here, we use two more additional packages `numpy` and `pygame`.
 
 ### Start a game
 See usage on `main.py`
 
 ### Examples:
+If you want to use A star search algorithms, you it is your main.py file.
 ```
 main.py
 
@@ -76,6 +78,8 @@ game.initialize(height=9 , width= 7, num=14)
 # Choose the algorithm to perform (E.g A star search)
 game.run(a_star_search)
 ```
+
+
 
 
 Game rule

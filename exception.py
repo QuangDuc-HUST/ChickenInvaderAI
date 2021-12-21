@@ -1,5 +1,7 @@
 #
+#
 #Exception for the game.
+#
 #
 class NotExistSpace(Exception):
 	pass
@@ -12,6 +14,3 @@ class GameNotRun(Exception):
 
 class GameAlreadyRun(Exception):
     pass
-
-# class NotEnoughActions(Exception):
-	# pass

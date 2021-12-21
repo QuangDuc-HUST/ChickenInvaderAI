@@ -1,3 +1,7 @@
+#
+# Model file includes: Environments, Evaluate system
+#
+#
 from exception import *
 import numpy as np
 import os
@@ -8,7 +12,9 @@ import os
 
 
 class Evaluate(object):
-
+	'''
+	Evaluate system for the game including step counting , time counting
+	'''
 	def __init__(self, belong: 'GameModel'):
 		self._step = 0
 		self._time = 0
@@ -39,9 +45,9 @@ class Evaluate(object):
 		"""
 		return self._step
 
-	def evamultitime(self, algorithm, times):
+	def evamultitime(self, algorithm, times, maxdepth = None, maxrandom = None):
 		"""
-		Evaluate multiple times
+		Evaluate multiple times of one algorithms.
 		times : int
 		lst_time: lst of time
 		lst_result: lst of results
@@ -56,14 +62,17 @@ class Evaluate(object):
 
 		for _ in range(times):
 			self._belong.reinitialize()
-			result, time, steps, _, state = self._belong.run(algorithm)
+			if 'expectimax' in algorithm.__name__:
+				result, time, steps, _, state = self._belong.run(algorithm, maxdepth, maxrandom)
+			else:
+				result, time, steps, _, state = self._belong.run(algorithm)
 			lst_time.append(time)
 			lst_result.append(result)
 			lst_steps.append(steps)
 			self._states.append(copy.deepcopy(state))
 
 		print('-' * 30)
-		print('Multi-time Evaluation')
+		print('---Multi-time Evaluation---')
 		print(f'List of times: {lst_time}')
 		print(f'List of result: {lst_result}')
 		print(f'List of steps: {[(i, lst_steps[i]) for i in range(len(lst_steps))]}')
@@ -74,6 +83,9 @@ class Evaluate(object):
 		return lst_time, lst_steps, self._states
 
 	def saveGame(self, filename):
+		'''
+		Save data for multiple games.
+		'''
 		if not len(self._states):
 			raise GameNotRun('Game does not run yet.') 
 			
@@ -84,7 +96,7 @@ class Evaluate(object):
 		print(f'Your data "{filename}_multi.pickle" has been saved successfully in data folder')
 
 
-class Object(object):
+class SpaceObject(object):
 
 	def __init__(self, x: int = None, y: int = None, belong: 'Space' = None, label: str = None):
 		"""
@@ -99,7 +111,7 @@ class Object(object):
 		self.label = label
 		self.belong = belong
 
-	def collide(self, other: 'Object'):
+	def collide(self, other: 'SpaceObject'):
 		"""
 		function that check whether an object collides another object
 		(2 objects have same label cannot collide)
@@ -117,7 +129,7 @@ class Object(object):
 		pass
 
 
-class SpaceShip(Object):
+class SpaceShip(SpaceObject):
 
 	def __init__(self, x, y, belong: 'Space' = None,  label='Ship', available: bool = True):
 		"""
@@ -178,7 +190,7 @@ class SpaceShip(Object):
 		self.belong.spaceship = self
 
 
-class Bullet(Object):
+class Bullet(SpaceObject):
 
 	def __init__(self, x, y, belong: 'Space', label='Bullet'):
 		"""
@@ -211,7 +223,7 @@ class Bullet(Object):
 		self.belong.figure[self.x, self.y] += 7
 
 	
-class Egg(Object):
+class Egg(SpaceObject):
 
 	def __init__(self, x, y, belong: 'Space', label='Egg'):
 		"""
@@ -251,7 +263,7 @@ class Egg(Object):
 		self.belong.figure[self.x, self.y] += 4
 
 
-class Invader(Object):
+class Invader(SpaceObject):
 
 	def __init__(self, x, y, belong: 'Space', label="Invader"):
 		"""
@@ -277,7 +289,9 @@ class Invader(Object):
 
 
 class Space(object):
-
+	'''
+	Environment Model for the game.	
+	'''
 	def __init__(self, height: int, width: int):
 		"""
 		Environment for a space fight between invaders and our space ship
@@ -308,8 +322,6 @@ class Space(object):
 		Method show matrix represent position of all objects in space
 		"""
 		print(self.figure)
-
-	# for initialize
 
 	def invaders_initialize(self):
 		"""
@@ -349,9 +361,7 @@ class Space(object):
 		num:	number of invaders
 		"""
 		self.num = num
-		# ship_y = np.random.randint(self.width)
-		ship_y = self.width // 2
-		# ship_y = 0
+		ship_y = self.width // 2 ## Intially in the middle
 		SpaceShip(x=self.height-1, y=ship_y, belong=self)
 
 		self.invaders_initialize()
@@ -388,7 +398,7 @@ class Space(object):
 	
 	def check_losing(self):
 		"""
-		Return True if  egg collide spaceship 
+		Return True if egg collide spaceship 
 		"""
 		result = False
 
@@ -402,7 +412,7 @@ class Space(object):
 		"""
 		Update bullets move for the game
 		"""
-		for bullet in self.bullets:	
+		for bullet in self.bullets.copy():	
 			bullet.move()
 
 		for invader in self.invaders.copy():
@@ -454,6 +464,9 @@ class GameModel(object):
 		self._isrun = False
 
 	def reinitialize(self):
+		'''
+		Reinitialize the game in order to evaluate.
+		'''
 		if not self._isinit:
 			raise GameNotIni("Don't forget to initialize game before reinit.")
 			
@@ -473,7 +486,7 @@ class GameModel(object):
 		self._evaluate = Evaluate(self)
 		return self._evaluate
 	
-	def run(self, algorithm):
+	def run(self, algorithm, maxdepth = None, maxrandom = None):
 		"""
 		times: the number of evaluation
 
@@ -505,16 +518,19 @@ class GameModel(object):
 		# Start game
 
 		while True:
-
+			
 			space.step += 1
 			space.update_bullet()
-
 			print('Start algorithm.')
-			temp = algorithm(space)
+			if 'expectimax' in algorithm.__name__:
+				temp = algorithm(space, maxdepth, maxrandom)
+			else:
+				temp = algorithm(space)
+
 			print(f'Step {space.step + 1}: Do ', end='')
 			print(f'You choose: {temp}')
+			
 			space.spaceship.move(temp)
-
 			# For evaluate
 			self._actions.append(temp)
 			self._evaluate.setstep(space.step)
@@ -546,7 +562,6 @@ class GameModel(object):
 			# Display each step
 			space.show()
 			print('---'*10)
-
 		self._states.append(copy.deepcopy(space.figure))
 
 		# Display
@@ -560,11 +575,17 @@ class GameModel(object):
 		return result, time, steps, self._actions, self._states
 		
 	def getStatesStatistic(self):
+		'''
+		return list of states of the game.
+		'''
 		if not len(self._states):
 			raise GameNotRun('Game does not run yet.') 
 		return self._states
 
 	def getActionsStatistic(self):
+		'''
+		return list of actions.
+		'''
 		if not len(self._actions):
 			raise GameNotRun('Game does not run yet.')
 		return self._actions
@@ -572,7 +593,7 @@ class GameModel(object):
 	def saveData(self, filename):
 		"""
 		save data in pickle file in data
-		name = filename + currenttime
+		name = filename
 		"""
 		FILENAME = os.path.join('data', f'{filename}.pickle')
 		with open(FILENAME, 'wb') as f:
