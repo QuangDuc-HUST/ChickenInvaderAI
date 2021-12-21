@@ -1,4 +1,4 @@
-Chicken Invader Project -  Artificial Intellegence 2021
+Chicken Invaders Project -  Artificial Intellegence 2021
 =========
 
 <p align="center">
@@ -8,7 +8,7 @@ Chicken Invader Project -  Artificial Intellegence 2021
 
 Overview
 ---------
-An easier version of Chicken Invader game implemented in python 3 including simple GUI for visualization and enjoyment.
+An easier and simpler version of Chicken Invader game implemented in python 3 including simple GUI for visualization and enjoyment.
 
 
 Our game repository has three main parts:
@@ -37,8 +37,8 @@ Algorithms
 Related folder: `algorithms`\
 We use two AI algorithms: 
 
-1.  Local search for agent.
-2.  Expectimax for agent.
+1.  A star search for agent.
+2.  Expectimax search for agent.
 
 Visualization
 -----
@@ -46,9 +46,9 @@ Related files: `visualization.py`.
 
 There are two modes of the GUI in this game:
 
-1.  Human mode : Get input from the keyboard in each turn of the spaceship.
+1.  Human mode : Get input from your keyboard in each turn of the spaceship.
 
-2.  Auto mode: The input is the series of actions of one of those above algorithms.
+2.  Auto mode: Get the input is the series of actions of one of those above algorithms.
 
 Note: in each mode, we also have 'play back' mode so as to watch what happened.
 
@@ -73,8 +73,8 @@ main.py
 game = GameModel()
 # Initilize the game with height = 9, width = 7, num of chicken = 14
 game.initialize(height=9 , width= 7, num=14)
-# Choose the algorithm to perform (E.g local search)
-game.run(local_search)
+# Choose the algorithm to perform (E.g A star search)
+game.run(a_star_search)
 ```
 
 
@@ -86,9 +86,9 @@ Information in the report.
 Other files and folders
 -----
 - `main.py` file: the full environment to play the game (control room).
-- `exception.py` file: Including some exception class related to  the game.
+- `exception.py` file: Including some exception class related to the game.
 - `data` folder: saved folder for series of action in one game.                    
-- `assets` folder: images folder used for visualization.
+- `assets` folder: images folder used for visualization (GUI).
 - `draft` folder: old files.
 
 
