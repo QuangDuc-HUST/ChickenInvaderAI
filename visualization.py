@@ -1,3 +1,9 @@
+#
+#
+#Visualize the game by get input as pickle file
+#For more information, you can go to README.md
+#
+#
 import pygame
 import os
 import copy
@@ -311,3 +317,4 @@ if __name__ == '__main__':
     # online_play(game)
 
     visualize_play('Test')
+    # online_play(game)

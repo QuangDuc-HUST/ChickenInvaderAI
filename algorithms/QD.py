@@ -1,12 +1,11 @@
 import copy
 
-#Auxiliary function
 def nextSpace(space, action, isAgent):
-
+    '''
+    Return the copy of the space if the agent or the chicken does an action.
+    '''
     newspace = copy.deepcopy(space)
-
     if isAgent:
-    # print(f'Next space step: {newspace.step}')
         newspace.step += 1
         for bullet in newspace.bullets:
             bullet.move()
@@ -21,19 +20,19 @@ def nextSpace(space, action, isAgent):
         for egg in newspace.eggs.copy():
             egg.drop()   
         newspace.spaceship.move(action)
-
     else:
         newspace.invader_actions()
-    # print(f'OLD SPACE: {space}')
-    # print(f'NEW SPACE: {newspace}')
     return newspace
 
 MAX_DEPTH = 3
-MAX_RANDOM = 5
+MAX_RANDOM = 3
 ACTIONS = ['a', 'd', 'w', 'remain']
 
 def getpositions(space):
-
+    '''
+    Auxiliary function:
+    return position of objects, agents in the current state.
+    '''
     ship = space.spaceship.get_position()
     lstbullets = [x.get_position() for x in space.bullets]
     lstinvaders = [x.get_position() for x in space.invaders]
@@ -42,7 +41,7 @@ def getpositions(space):
 
 def get_legal_actions(space):
     '''
-    return lst of legal actions
+    return lst of legal actions in current state.
     '''
     available_action = ACTIONS[:]
     ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
@@ -59,7 +58,7 @@ def get_legal_actions(space):
 
 def nearest_invader(space):
     '''
-    Return the distance of nearest invader or to the middle if there is no chicken
+    Return the distance of nearest invader or to the middle if there is no chicken.
     '''
     ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
     min = 2.5 * space.width
@@ -69,7 +68,7 @@ def nearest_invader(space):
             if temp < min:
                 min = temp
     else:
-        min = abs(ship[1] - space.width // 2)
+        min = abs(ship[1] - space.width // 2)   
     return min
 
 def top_egg(space):
@@ -80,17 +79,13 @@ def top_egg(space):
     num = 0
     for egg in lsteggs:
         if egg[0] == 2: 
-            if ship[1] == egg[1] - 1 or ship[1] == egg[1] or ship[1] == egg[1] + 1:
+            if ship[1] - egg[1] in [-1, 1, 0]:
                 num += 1
-        
-        # elif egg[0] == 2:
-        #     if ship[1] == egg[1] - 1 or ship[1] == egg[1] or ship[1] == egg[1] + 1:
-        #         num += 1
     return num
 
 def expected_chicken(space):
     '''
-    return the number of real chicken
+    return the number of will-die and die chicken
     '''
     ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
     actual_chicken = len(lstinvaders)
@@ -111,9 +106,9 @@ def expected_chicken(space):
     
     return actual_chicken - willdie_chicken
 
-def evaluate(space):
+def utility(space):
     '''
-    return evaluate value of the state.
+    return utility value of the state.
     '''
     ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
 
@@ -121,28 +116,27 @@ def evaluate(space):
 
     for egg in lsteggs:
         if egg == ship:
-            result -= 4*space.width
+            result -=  4* space.width 
 
+    result -= expected_chicken(space) * 3  
     result -= nearest_invader(space)
-    result -= expected_chicken(space) * 3
     result -= 2 * top_egg(space)
-
 
     return result
 
 def expectimax_getaction(space):
     '''
-    return an action else remain
+    return an action of the sequence else remain
     '''
     score, actions = maxValue(space, 0)
     return actions[0] if len(actions) > 0 else 'remain'
 
 def maxValue(space, depth):
     '''
-    return maxScore and maxScoreActions
+    return maxScore, maxScoreActions in MAX agent
     '''
     if space.check_winning() or space.check_losing() or depth == MAX_DEPTH:
-        return evaluate(space), []
+        return utility(space), []
 
     max_score = float('-inf')
     max_score_actions = None
@@ -161,10 +155,10 @@ def maxValue(space, depth):
 
 def expectedValue(space, depth):
     '''
-    return expected score
+    return expected score, [] in EXP agent.
     '''
     if space.check_winning() or space.check_losing() or depth == MAX_DEPTH:
-        return evaluate(space), []
+        return utility(space), []
     
     expected_score = 0
 
