@@ -13,7 +13,6 @@ class Node:
         self.ship_y = ship_y
 
     def __lt__(self, other):
-        # inverse the heap
         return self.h < other.h
 
 
@@ -56,8 +55,8 @@ def a_star_search(space):
     # 1.Success of bullet
     # a bullet is considered to be a good one is the bullet that will kill a invaders in the future
     # if it is a efficient action, it will get points depends on the time that the bullet is shot
-    # the sooner it is shot, the larger the points
-    # otherwise, it will lose points in the same way
+    # the sooner it is shot, the smaller the points
+    # otherwise, it will acquire points
     def heuristic1(figure, current_y, point):
         column = [figure[t][current_y] for t in range(h)]
         # if this column has invaders that need to be killed, we shoot and get points
@@ -104,7 +103,7 @@ def a_star_search(space):
         else:
             return point + cost_of_bad_moves * (len(actions))
 
-    # checking if we reach the leaf of tree function
+    # function that check if we reach the goal state
 
     def no_eggs_in_space(f1):
         for i in range(len(f1)):
