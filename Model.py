@@ -45,7 +45,7 @@ class Evaluate(object):
 		"""
 		return self._step
 
-	def evamultitime(self, algorithm, times):
+	def evamultitime(self, algorithm, times, maxdepth = None, maxrandom = None):
 		"""
 		Evaluate multiple times of one algorithms.
 		times : int
@@ -62,7 +62,10 @@ class Evaluate(object):
 
 		for _ in range(times):
 			self._belong.reinitialize()
-			result, time, steps, _, state = self._belong.run(algorithm)
+			if 'expectimax' in algorithm.__name__:
+				result, time, steps, _, state = self._belong.run(algorithm, maxdepth, maxrandom)
+			else:
+				result, time, steps, _, state = self._belong.run(algorithm)
 			lst_time.append(time)
 			lst_result.append(result)
 			lst_steps.append(steps)
@@ -483,7 +486,7 @@ class GameModel(object):
 		self._evaluate = Evaluate(self)
 		return self._evaluate
 	
-	def run(self, algorithm):
+	def run(self, algorithm, maxdepth = None, maxrandom = None):
 		"""
 		times: the number of evaluation
 
@@ -515,16 +518,19 @@ class GameModel(object):
 		# Start game
 
 		while True:
-
+			
 			space.step += 1
 			space.update_bullet()
-
 			print('Start algorithm.')
-			temp = algorithm(space)
+			if 'expectimax' in algorithm.__name__:
+				temp = algorithm(space, maxdepth, maxrandom)
+			else:
+				temp = algorithm(space)
+
 			print(f'Step {space.step + 1}: Do ', end='')
 			print(f'You choose: {temp}')
+			
 			space.spaceship.move(temp)
-
 			# For evaluate
 			self._actions.append(temp)
 			self._evaluate.setstep(space.step)
@@ -556,7 +562,6 @@ class GameModel(object):
 			# Display each step
 			space.show()
 			print('---'*10)
-
 		self._states.append(copy.deepcopy(space.figure))
 
 		# Display

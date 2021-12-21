@@ -201,10 +201,10 @@ def online_play(game: 'GameModel'):
 def visualize_play(filename):
 
     ## Get input file
-    
     with open(os.path.join('data', f'{filename}.pickle'), 'rb') as f:
         list_data = pickle.load(f)
     
+    # list_data = list_data[1]
         
     # __COLOR__
     White, Grey = (255, 255, 255), (100, 100, 100)
@@ -316,5 +316,5 @@ if __name__ == '__main__':
     # game.initialize(height=9, width=7, num=14)
     # online_play(game)
 
-    visualize_play('Test')
+    visualize_play('Testmulti1_multi')
     # online_play(game)

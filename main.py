@@ -28,12 +28,12 @@ def main():
         If you want to visualize the result of the algorthm. Save data by game.saveData(filename) then visualize_play(filename)
     '''
 
-    ## Initilize game 
+    ## Initialize Game 
     game = GameModel()
     game.initialize(height=9, width=7, num=14)
 
 
-    # Play game
+    # PLAY GAME
     ## Human mode
     # online_play(game)
 
