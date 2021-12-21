@@ -31,20 +31,20 @@ def main():
     # online_play(game)
     # game.run(local_search)
     # game.run(getinput)
-    # game.run(a_star_search)
+    game.run(a_star_search)
     # game.run(expectimax_getaction)
 
     # __SAVE DATA__
-    # game.saveData('Test')
+    game.saveData('Test')
 
     ## Evaluatate multiple time
-    eva = game.getEvaluate()
+    #eva = game.getEvaluate()
 
     # eva.evamultitime(local_search, times= 100)
     # eva.evamultitime(expectimax_getaction, times= 100)
-    eva.evamultitime(a_star_search, 25)
+    #eva.evamultitime(a_star_search, 25)
 
-    eva.saveGame('Testmulti1')
+    #eva.saveGame('Testmulti1')
 
 
 if __name__ == '__main__':
