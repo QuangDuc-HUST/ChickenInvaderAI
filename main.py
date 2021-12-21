@@ -28,12 +28,12 @@ def main():
         If you want to visualize the result of the algorthm. Save data by game.saveData(filename) then visualize_play(filename)
     '''
 
-    ## Initilize game 
+    ## Initialize Game 
     game = GameModel()
     game.initialize(height=9, width=7, num=14)
 
 
-    # Play game
+    # PLAY GAME
     ## Human mode
     # online_play(game)
 
@@ -41,20 +41,26 @@ def main():
     # game.run(local_search)
     # game.run(getinput)
     game.run(a_star_search)
-    # game.run(expectimax_getaction)
+    # game.run(expectimax_getaction, maxdepth=3, maxrandom=3)
+
+    ### SAVE and VISUALIZATION
+    FILENAME = 'Test'
 
     # __SAVE DATA__
-    game.saveData('Test')
+    game.saveData(FILENAME)
+
+    # __VISUALIZATION___
+    visualize_play(FILENAME)
 
     ## Evaluatate multiple time
     # eva = game.getEvaluate()
 
-    # eva.evamultitime(local_search, times= 100)
-    # eva.evamultitime(expectimax_getaction, times= 100)
-    # eva.evamultitime(a_star_search, 25)
+    # eva.evamultitime(local_search, times= 25)
+    # eva.evamultitime(expectimax_getaction, times= 5, maxdepth = 3, maxrandom = 4)
+    # eva.evamultitime(a_star_search, 5)
 
     # eva.saveGame('Testmulti1')
-    visualize_play('Test')
+    
 
 if __name__ == '__main__':
     main()
