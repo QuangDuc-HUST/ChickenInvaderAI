@@ -12,9 +12,9 @@ import os
 
 
 class Evaluate(object):
-	'''
+	"""
 	Evaluate system for the game including step counting , time counting
-	'''
+	"""
 	def __init__(self, belong: 'GameModel'):
 		self._step = 0
 		self._time = 0
@@ -45,7 +45,7 @@ class Evaluate(object):
 		"""
 		return self._step
 
-	def evamultitime(self, algorithm, times, maxdepth = None, maxrandom = None):
+	def evamultitime(self, algorithm, times, maxdepth=None, maxrandom=None):
 		"""
 		Evaluate multiple times of one algorithms.
 		times : int
@@ -83,9 +83,9 @@ class Evaluate(object):
 		return lst_time, lst_steps, self._states
 
 	def saveGame(self, filename):
-		'''
+		"""
 		Save data for multiple games.
-		'''
+		"""
 		if not len(self._states):
 			raise GameNotRun('Game does not run yet.') 
 			
@@ -289,9 +289,9 @@ class Invader(SpaceObject):
 
 
 class Space(object):
-	'''
-	Environment Model for the game.	
-	'''
+	"""
+	Environment Model for the game
+	"""
 	def __init__(self, height: int, width: int):
 		"""
 		Environment for a space fight between invaders and our space ship
@@ -361,7 +361,8 @@ class Space(object):
 		num:	number of invaders
 		"""
 		self.num = num
-		ship_y = self.width // 2 ## Intially in the middle
+		# Initially in the middle
+		ship_y = self.width // 2
 		SpaceShip(x=self.height-1, y=ship_y, belong=self)
 
 		self.invaders_initialize()
@@ -464,9 +465,9 @@ class GameModel(object):
 		self._isrun = False
 
 	def reinitialize(self):
-		'''
-		Reinitialize the game in order to evaluate.
-		'''
+		"""
+		Reinitialize the game in order to evaluate
+		"""
 		if not self._isinit:
 			raise GameNotIni("Don't forget to initialize game before reinit.")
 			
@@ -486,7 +487,7 @@ class GameModel(object):
 		self._evaluate = Evaluate(self)
 		return self._evaluate
 	
-	def run(self, algorithm, maxdepth = None, maxrandom = None):
+	def run(self, algorithm, maxdepth=None, maxrandom=None):
 		"""
 		times: the number of evaluation
 
@@ -575,17 +576,17 @@ class GameModel(object):
 		return result, time, steps, self._actions, self._states
 		
 	def getStatesStatistic(self):
-		'''
-		return list of states of the game.
-		'''
+		"""
+		Return list of states of the game
+		"""
 		if not len(self._states):
 			raise GameNotRun('Game does not run yet.') 
 		return self._states
 
 	def getActionsStatistic(self):
-		'''
-		return list of actions.
-		'''
+		"""
+		Return list of actions
+		"""
 		if not len(self._actions):
 			raise GameNotRun('Game does not run yet.')
 		return self._actions

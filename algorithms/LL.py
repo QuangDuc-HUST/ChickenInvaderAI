@@ -5,9 +5,9 @@
 #
 
 
-
 import copy
 import heapq
+
 
 class Node:
     def __init__(self, figure, heuristic, invaders, eggs, bullets, ship_y, move):
