@@ -102,7 +102,7 @@ def a_star_search(space):
             # ValueError may occur when we finish the game i.e. all invaders are removed before reach goal state
             good_move = False
 
-        return point + cost_of_bad_moves * (good_move + 1) - cost_of_good_moves * good_move
+        return point + cost_of_bad_moves * (1 - good_move) - cost_of_good_moves * good_move
 
     # function that check if we reach the goal state
 
