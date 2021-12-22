@@ -1,7 +1,7 @@
 #
 #
-#Visualize the game by get input as pickle file
-#For more information, you can go to README.md
+# Visualize the game by get input as pickle file
+# For more information, you can go to README.md
 #
 #
 import pygame
@@ -50,29 +50,30 @@ def online_play(game: 'GameModel'):
         screen.blit(img_chicken, (x*unit, y*unit))
 
     def draw_screen(step: int):
-        '''
+        """
         Draw objects on screen by data from saved states
-        '''
+        """
+        label = None
         screen.blit(background, (0, 0))
         step_label = pygame.font.SysFont("arial", 12).render(
-            f"Step: {step} --- Mode: " + mode, 1, (255, 255, 255))
+            f"Step: {step} --- Mode: " + mode, True, (255, 255, 255))
         screen.blit(step_label, (10, screen_height -
                     step_label.get_height()-unit/2))
         if mode == 'play-back':
             label = pygame.font.SysFont("arial", 12).render(
-                f"Press SPACE to return 'play' mode.", 1, (255, 255, 255))
+                f"Press SPACE to return 'play' mode.", True, (255, 255, 255))
         elif mode == 'play':
             label = pygame.font.SysFont("arial", 12).render(
-                f"Press A, D, S, W to control|| Press left, right arrow to 'play-back", 1, (255, 255, 255))
+                f"Press A, D, S, W to control|| Press left, right arrow to 'play-back", True, (255, 255, 255))
         if finish and step == len(game._states)-1:
             if len(space.invaders) > 0:
                 lose_label = pygame.font.SysFont(
-                    "arial", 40).render(f"LOSE", 1, Red)
+                    "arial", 40).render(f"LOSE", True, Red)
                 screen.blit(lose_label, (screen_width/2 - lose_label.get_width() /
                             2, screen_height/2 - lose_label.get_height()/2))
             else:
                 win_label = pygame.font.SysFont(
-                    "arial", 40).render(f"WIN", 1, Red)
+                    "arial", 40).render(f"WIN", True, Red)
                 screen.blit(win_label, (screen_width/2 - win_label.get_width() /
                             2, screen_height/2 - win_label.get_height()/2))
         screen.blit(label, (10, screen_height-label.get_height()-10))
@@ -126,18 +127,14 @@ def online_play(game: 'GameModel'):
                 acting_possible_invaders.append(invader)
 
         if step % 3 == 1:
-
             if len(acting_possible_invaders):
-                new_egg_number = np.random.randint(
-                    1, min([4, 1 + len(acting_possible_invaders)]))
+                new_egg_number = np.random.randint(1, min([4, 1 + len(acting_possible_invaders)]))
                 laying_invader = sorted(np.random.choice(
                     range(len(acting_possible_invaders)), new_egg_number, replace=False))
                 for i in laying_invader:
                     acting_possible_invaders[i].lay()
             else:
                 return
-                for i in acting_possible_invaders:
-                    i.lay()
 
     mode = 'play'
     current_step = 0
@@ -198,9 +195,10 @@ def online_play(game: 'GameModel'):
                             playback_step = 0
     pygame.quit()
 
+
 def visualize_play(filename):
 
-    ## Get input file
+    # Get input file
     with open(os.path.join('data', f'{filename}.pickle'), 'rb') as f:
         list_data = pickle.load(f)
     
@@ -232,24 +230,19 @@ def visualize_play(filename):
 
     # __DRAW OBJECT FUNCTIONS__
 
-
     def draw_ship(x, y):
         screen.blit(img_ship, (x*unit, y*unit))
-
 
     def draw_egg(x, y):
         pygame.draw.circle(screen, White, ((x+0.5) * unit, (y+0.5)*unit), unit//6)
 
-
     def draw_laser(x, y):
         screen.blit(img_laser, (x*unit, y*unit))
-
 
     def draw_chicken(x, y):
         screen.blit(img_chicken, (x*unit, y*unit))
 
-
-    # __DRAW SCREEN FUNCTION__
+    # DRAW SCREEN FUNCTION
     def draw_screen(step: str, list_data):
         screen.blit(background, (0, 0))
         step_label = pygame.font.SysFont("arial", 20).render(
@@ -277,15 +270,11 @@ def visualize_play(filename):
                         draw_egg(x, y)
                         draw_laser(x, y)
         for i in range(1, size[0]):
-            pygame.draw.line(screen, Grey, (i * unit, 0),
-                            (i * unit, screen_height-unit))
+            pygame.draw.line(screen, Grey, (i * unit, 0), (i * unit, screen_height-unit))
         for i in range(1, size[1]):
             pygame.draw.line(screen, Grey, (0, i * unit), (screen_width, i * unit))
         
         pygame.display.update()
-
-    
-        
 
     pygame.init()
     pygame.font.init()
