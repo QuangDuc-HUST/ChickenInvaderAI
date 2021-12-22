@@ -5,7 +5,7 @@
 #
 from visualization import online_play, visualize_play
 from Model import GameModel
-from algorithms.LL import a_star_search  # Sourcecode: LL
+from algorithms.LL import greedy_bfs  # Sourcecode: LL
 from algorithms.HD import greedy_search  # Sourcecode: HD
 from algorithms.QD import expectimax_getaction
 
@@ -51,7 +51,7 @@ def main():
 
     #eva.evamultitime(greedy_search, times= 50)
     # eva.evamultitime(expectimax_getaction, times= 5)
-    eva.evamultitime(a_star_search, 25)
+    eva.evamultitime(greedy_bfs, 25)
 
     #eva.saveGame('Test')
 

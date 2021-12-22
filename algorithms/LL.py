@@ -16,7 +16,7 @@ class Node:
         return self.h < other.h
 
 
-def a_star_search(space):
+def greedy_bfs(space):
     ###########
     cost_of_success_bullets = 2
     cost_of_failed_bullets = 1
