@@ -1,6 +1,9 @@
+#
+#
+# Source code: Local Search Algorithm	
+#
+#
 import copy
-import numpy as np
-# from Model import *
 
 def greedy_search(space) -> (str):
 	"""

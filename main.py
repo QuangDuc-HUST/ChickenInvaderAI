@@ -36,27 +36,26 @@ def main():
     # PLAY GAME
     ## Human mode
     # online_play(game)
+    # game.run(getinput)
 
     ## Auto mode
-    # game.run(local_search)
-    # game.run(getinput)
     # game.run(greedy_search)
-    # game.run(expectimax_getaction)
-    #game.run(a_star_search)
+    # game.run(expectimax_getaction, maxdepth=2 , maxrandom=3)
+    # game.run(a_star_search)
+
     # __SAVE DATA__
     # game.saveData('Test')
 
-    ## Evaluatate multiple time
-    eva = game.getEvaluate()
-
-    #eva.evamultitime(greedy_search, times= 50)
-    # eva.evamultitime(expectimax_getaction, times= 5)
-    eva.evamultitime(greedy_bfs, 25)
-
-    #eva.saveGame('Test')
-
-    # eva.saveGame('Testmulti1')
+    # __VISUALIZATION__
     # visualize_play('Test')
+
+    ## Evaluatate multiple time
+    
+    eva = game.getEvaluate()
+    # eva.evamultitime(greedy_search, times= 50)
+    #eva.evamultitime(expectimax_getaction, times= 5)
+    # eva.evamultitime(a_star_search, 25)
+    eva.saveGame('Testmulti')
 
 if __name__ == '__main__':
     main()
