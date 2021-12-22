@@ -18,10 +18,10 @@ class Node:
 
 def a_star_search(space):
     ###########
-    cost_of_shooting_success_bullets = -2
+    cost_of_shooting_success_bullets = 2
     cost_of_shooting_failed_bullets = 1
-    cost_of_shooting_success_bullets_that_kill_invaders_in_1st_layer = -99
-    cost_of_good_moves = -1
+    cost_of_shooting_success_bullets_that_kill_invaders_in_1st_layer = 99
+    cost_of_good_moves = 1
     cost_of_bad_moves = 1
     # changing environment function
     # eggs dropping
@@ -54,29 +54,28 @@ def a_star_search(space):
 
     # 1.Success of bullet
     # a bullet is considered to be a good one is the bullet that will kill a invaders in the future
-    # if it is a efficient action, it will get points depends on the time that the bullet is shot
-    # the sooner it is shot, the smaller the points
-    # otherwise, it will acquire points
+    # if it is a efficient action, it will lose points since we want to minimize the heuristic point,
+    # otherwise, it will get points
     def heuristic1(figure, current_y, point):
         column = [figure[t][current_y] for t in range(h)]
-        # if this column has invaders that need to be killed, we shoot and get points
+        # if this column has invaders that need to be killed, we shoot and lose points
         if column.count(1) >= column.count(7) + column.count(11):
-            point += cost_of_shooting_success_bullets * (len(state.m))
+            point -= cost_of_shooting_success_bullets
             # we prefer to kill invaders in the column that has 2 of them to kill invaders in the column that has only
             # 1 invader to avoid bad situations
             if column.count(1) == 2 and column.count(7) + column.count(11) == 1:
-                point += cost_of_shooting_success_bullets_that_kill_invaders_in_1st_layer * (len(state.m))
-        # otherwise we lose some points
+                point -= cost_of_shooting_success_bullets_that_kill_invaders_in_1st_layer
+        # otherwise we get point
         else:
-            point += cost_of_shooting_failed_bullets * (len(state.m))
+            point += cost_of_shooting_failed_bullets
         return point
     # 2.Making better move
     # If our move in this turn is better than that of the last one, which mean the ship move closer to the
-    # columns that contain invaders, it will get bonus points due to the appearance time.
+    # columns that contain invaders, it will lose point, otherwise, it will get point.
     # As i said before, we always want to kill invaders in column that has 2 of them so we tend to move to these columns
     # rather than the others
 
-    def heuristic2(figure, previous_move, current_move, actions, point):
+    def heuristic2(figure, previous_move, current_move, point):
         invaders_columns = []
         # find the maximum number of invaders in 1 column
         max_invaders = 0
@@ -99,9 +98,9 @@ def a_star_search(space):
             good_move = False
 
         if good_move:
-            return point + cost_of_good_moves * (len(actions))
+            return point - cost_of_good_moves
         else:
-            return point + cost_of_bad_moves * (len(actions))
+            return point + cost_of_bad_moves
 
     # function that check if we reach the goal state
 
@@ -127,21 +126,20 @@ def a_star_search(space):
     A = []
     # push the current states to the heap
     heapq.heappush(A, Node(figure, 0, invaders_positions, eggs_positions, bullets_positions, ship_y, previous_state))
-    # the heap will keep track of the state that has the highest heuristic
     while True:
         # pop the best state
         state = heapq.heappop(A)
         # because when we get the information about the environment, its bullets and invaders were changed,
         # we do the rest which is egg dropping
         f, e = change_eggs(state.f, state.e)
-        # check if we reach the leaf
+        # check if we reach the terminal state
         if no_eggs_in_space(f):
             if len(state.m) == 1:
                 return 'w' if state.m[0] == 'a or d or remain' else 'a'
             else:
                 return state.m[1]
         else:
-            # if we shot in the previous turn, this turn we should not shoot cuz it makes no senses
+            # if we shot in the previous turn, this turn we can not shoot
             if state.m[-1] == 'w':
                 possible_moves = ['a', 'd', 'remain']
             else:
@@ -158,24 +156,20 @@ def a_star_search(space):
                     if state.ship_y - 1 == -1:
                         continue
                     temp_y = state.ship_y - 1
-                    # temp_point += move_rating(f_temp, map.ship_y, temp_y)
                 elif move == 'd':
                     if state.ship_y + 1 == w:
                         continue
                     temp_y = state.ship_y + 1
-                    # temp_point += move_rating(f_temp, map.ship_y, temp_y)
                 else:
                     temp_y = state.ship_y
                     if move == 'w':
                         f_temp[h - 2][state.ship_y] += 7
                         b_temp.append((h - 2, state.ship_y))
                         temp_point = heuristic1(f_temp, state.ship_y, temp_point)
-                    # change variable to make sure it cant shoot in the next step ( like the environment )
                 # move the ship in the grid
                 f_temp[h - 1][state.ship_y] -= 2
                 f_temp[h - 1][temp_y] += 2
-                temp_point = heuristic2(f_temp, state.ship_y, temp_y, state.m,
-                                        temp_point)
+                temp_point = heuristic2(f_temp, state.ship_y, temp_y, temp_point)
                 if (h - 1, temp_y) not in e:
                     # if that actions don't lead to collision with an egg, we will go for it
                     f_temp, i_temp, b_temp = change_bullets(f_temp, i_temp, b_temp)
