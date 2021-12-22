@@ -135,8 +135,11 @@ def a_star_search(space):
         # check if we reach the terminal state
         if no_eggs_in_space(f):
             if len(state.m) == 1:
+                # just for dealing with the first few steps which the states have the 'goal state property'
+                # in these case, we just shoot, then move, then shoot...
                 return 'w' if state.m[0] == 'a or d or remain' else 'a'
             else:
+                # return the first action in the best sequence of actions
                 return state.m[1]
         else:
             # if we shot in the previous turn, this turn we can not shoot
