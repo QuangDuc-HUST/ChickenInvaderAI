@@ -18,9 +18,9 @@ class Node:
 
 def a_star_search(space):
     ###########
-    cost_of_shooting_success_bullets = 2
-    cost_of_shooting_failed_bullets = 1
-    cost_of_shooting_success_bullets_that_kill_invaders_in_1st_layer = 99
+    cost_of_success_bullets = 2
+    cost_of_failed_bullets = 1
+    cost_of_success_in_layer1 = 99
     cost_of_good_moves = 1
     cost_of_bad_moves = 1
     # changing environment function
@@ -58,17 +58,21 @@ def a_star_search(space):
     # otherwise, it will get points
     def heuristic1(figure, current_y, point):
         column = [figure[t][current_y] for t in range(h)]
+        success_bullets = False
+        failed_bullets = False
+        success_in_layer1 = False
         # if this column has invaders that need to be killed, we shoot and lose points
         if column.count(1) >= column.count(7) + column.count(11):
-            point -= cost_of_shooting_success_bullets
             # we prefer to kill invaders in the column that has 2 of them to kill invaders in the column that has only
             # 1 invader to avoid bad situations
+            success_bullets = True
             if column.count(1) == 2 and column.count(7) + column.count(11) == 1:
-                point -= cost_of_shooting_success_bullets_that_kill_invaders_in_1st_layer
+                success_in_layer1 = True
         # otherwise we get point
         else:
-            point += cost_of_shooting_failed_bullets
-        return point
+            failed_bullets = True
+        return point - cost_of_success_bullets * success_bullets + cost_of_failed_bullets * failed_bullets \
+               - cost_of_success_in_layer1 * success_in_layer1
     # 2.Making better move
     # If our move in this turn is better than that of the last one, which mean the ship move closer to the
     # columns that contain invaders, it will lose point, otherwise, it will get point.
