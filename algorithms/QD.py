@@ -6,10 +6,9 @@
 
 import copy
 
-
 def nextSpace(space, action, isAgent, isIStep):
     """
-    Return the copy of the space if the agent or the chicken does an action
+    Return the copy of the space if the agent or the chickens do an action
     """
     newspace = copy.deepcopy(space)
     if isAgent:
@@ -72,7 +71,7 @@ def nearest_invader(space):
     """
     ship, lstbullets, lstinvaders, lsteggs = getpositions(space)
     # big number
-    min_distance = 2.5 * space.width
+    min_distance = 100 * space.width
     if lstinvaders:
         for invader in lstinvaders:
             temp = abs(invader[1] - ship[1])
@@ -155,8 +154,6 @@ def maxValue(space, depth, maxdepth, randomdepth):
     Return maxScore, maxScoreActions in MAX agent
     """
     if space.check_winning() or space.check_losing() or depth == maxdepth:
-        # print(space.step)
-        # print(space.figure)
         return utility(space), []
 
     max_score = float('-inf')
@@ -171,7 +168,6 @@ def maxValue(space, depth, maxdepth, randomdepth):
         else:
             score, actions = expectedValue(nextSpace(space, action, isAgent=True, isIStep=True), depth, maxdepth,
                                            randomdepth)
-        # print(f'Action {action} : {score}')
         if score > max_score:
             max_score = score
             max_score_actions = [action] + actions
@@ -194,8 +190,6 @@ def expectedValue(space, depth, maxdepth, randomdepth):
         rd = randomdepth
 
     for _ in range(rd):
-        # print(_)
-        # print(space.figure)
         score, actions = maxValue(nextSpace(space, 'remain', isAgent=False, isIStep=True), depth + 1, maxdepth,
                                   randomdepth)
         expected_score += score / rd

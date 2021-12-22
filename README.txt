@@ -36,8 +36,9 @@ Algorithms
 Related folder: `algorithms`
 We use two AI algorithms: 
 
-1.  A star search for agent.
-2.  Expectimax search for agent.
+1.  Local search.
+2.  Greedy Best-First search.
+3.  Expectimax search. 
 
 Visualization
 -----
@@ -66,7 +67,6 @@ In here, we use two more additional packages `numpy` and `pygame`.
 See usage on `main.py`
 
 ### Examples:
-If you want to use A star search algorithms, you it is your main.py file.
 ```
 main.py
 
@@ -75,10 +75,13 @@ main.py
 game = GameModel()
 # Initilize the game with height = 9, width = 7, num of chicken = 14
 game.initialize(height=9 , width= 7, num=14)
-# Choose the algorithm to perform (E.g A star search)
-game.run(a_star_search)
+# Choose the algorithm to perform (E.g Greedy Best-First Search)
+game.run(greedy_bfs)
+# For save game
+game.savegame('DataBFS1')
+# For visualization
+visualize_play('DataBFS1')
 ```
-
 
 
 

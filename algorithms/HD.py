@@ -6,7 +6,7 @@
 import copy
 
 
-def greedy_search(space) -> str:
+def local_search(space) -> str:
 	"""
 	return a direction w/a/d/remain which has minimum heuristic value
 	"""

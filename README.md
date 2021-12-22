@@ -37,8 +37,9 @@ Algorithms
 Related folder: `algorithms`\
 We use two AI algorithms: 
 
-1.  A star search for agent.
-2.  Expectimax search for agent.
+1.  Local search.
+2.  Greedy Best-First search.
+3.  Expectimax search. 
 
 Visualization
 -----
@@ -48,7 +49,7 @@ There are two modes of the GUI in this game:
 
 1.  Human mode : Get input from your keyboard in each turn of the spaceship.
 
-2.  Auto mode: Get the input is the series of actions of one of those above algorithms.
+2.  Auto mode: Get the input is the series of actions as data of one of those above algorithms.
 
 Note: in each mode, we also have 'play back' mode so as to watch what happened.
 
@@ -73,8 +74,12 @@ main.py
 game = GameModel()
 # Initilize the game with height = 9, width = 7, num of chicken = 14
 game.initialize(height=9 , width= 7, num=14)
-# Choose the algorithm to perform (E.g A star search)
-game.run(a_star_search)
+# Choose the algorithm to perform (E.g Greedy Best-First Search)
+game.run(greedy_bfs)
+# For save game
+game.savegame('DataBFS1')
+# For visualization
+visualize_play('DataBFS1')
 ```
 
 

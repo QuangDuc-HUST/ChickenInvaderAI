@@ -1,10 +1,10 @@
 #
+#
 # Model file includes: Environments, Evaluate system
 #
 #
 from exception import *
 import numpy as np
-import os
 import timeit
 import copy
 import pickle
@@ -48,7 +48,7 @@ class Evaluate(object):
 	def evamultitime(self, algorithm, times, maxdepth=None, maxrandom=None):
 		"""
 		Evaluate multiple times of one algorithms.
-		times : int
+		times : int: the number of evaluation
 		lst_time: lst of time
 		lst_result: lst of results
 		lst_actions: lst of actions
@@ -84,11 +84,13 @@ class Evaluate(object):
 
 	def saveGame(self, filename):
 		"""
-		Save data for multiple games.
+		Save data for multiple trials game.
 		"""
 		if not len(self._states):
 			raise GameNotRun('Game does not run yet.') 
-			
+
+		# Create data folder if not exists
+		os.makedirs('data', exist_ok= True)
 		FILENAME = os.path.join('data', f'{filename}_multi.pickle')
 		with open(FILENAME, 'wb') as f:
 			pickle.dump(self._states, f)
@@ -399,7 +401,7 @@ class Space(object):
 	
 	def check_losing(self):
 		"""
-		Return True if egg collide spaceship 
+		Return True if a egg collides spaceship 
 		"""
 		result = False
 
@@ -411,7 +413,7 @@ class Space(object):
 		
 	def update_bullet(self):
 		"""
-		Update bullets move for the game
+		Update bullets movement for the game
 		"""
 		for bullet in self.bullets.copy():	
 			bullet.move()
@@ -425,7 +427,7 @@ class Space(object):
 
 	def update_egg(self):
 		"""
-		Update eggs move for the game
+		Update eggs movement for the game
 		"""
 		for egg in self.eggs.copy():
 			egg.drop()
@@ -489,14 +491,14 @@ class GameModel(object):
 	
 	def run(self, algorithm, maxdepth=None, maxrandom=None):
 		"""
-		times: the number of evaluation
-
-		return: True if win else False
-
-		Example
-		def test(space):
+		args:
+		algorithms: 
+		Example:
+		def alotest(space):
 			`` space: Space``
-			return an action, time, steps, actions
+			return an action
+		maxdepth and maxrandom for expectimax algorithms.
+		return: True if win else False
 		"""
 		if not self._isrun:
 			self._isrun = True
@@ -596,6 +598,8 @@ class GameModel(object):
 		save data in pickle file in data
 		name = filename
 		"""
+		# Create data folder if not exists
+		os.makedirs('data', exist_ok= True)
 		FILENAME = os.path.join('data', f'{filename}.pickle')
 		with open(FILENAME, 'wb') as f:
 			pickle.dump(self.getStatesStatistic(), f)

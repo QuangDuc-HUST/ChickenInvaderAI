@@ -3,10 +3,10 @@
 # main.py : running game
 #
 #
-from visualization import online_play, visualize_play
 from Model import GameModel
-from algorithms.LL import greedy_bfs  # Sourcecode: LL
-from algorithms.HD import greedy_search  # Sourcecode: HD
+from visualization import online_play, visualize_play
+from algorithms.LL import greedy_bfs  
+from algorithms.HD import local_search  
 from algorithms.QD import expectimax_getaction
 
 
@@ -35,31 +35,29 @@ def main():
     game.initialize(height=9, width=7, num=14)
 
     # PLAY GAME
-<<<<<<< HEAD
     ## Human mode
-    online_play(game)
-=======
-    # Human mode
     # online_play(game)
->>>>>>> d561d68d56551be5464e26e4f74f7abe42824f84
     # game.run(getinput)
 
     # Auto mode
-    # game.run(greedy_search)
-    # game.run(expectimax_getaction, maxdepth=2 , maxrandom=3)
-    # game.run(greedy_bfs)
+    # game.run(local_search)
+    # game.run(expectimax_getaction, maxdepth=3 , maxrandom=3)
+    game.run(greedy_bfs)
 
     # __SAVE DATA__
-    # game.saveData('Test')
+    game.saveData('Test')
 
     # __VISUALIZATION__
-    # visualize_play('Test')
+    visualize_play('Test')
 
+
+
+
+    ####
     # Evaluate multiple time
-    
     # eva = game.getEvaluate()
-    # eva.evamultitime(greedy_search, times= 50)
-    # eva.evamultitime(expectimax_getaction, times= 5)
+    # eva.evamultitime(local_search, times= 50)
+    # eva.evamultitime(expectimax_getaction, times= 5, maxdepth=3, maxrandom=3)
     # eva.evamultitime(a_star_search, 25)
     # eva.saveGame('Testmulti')
 

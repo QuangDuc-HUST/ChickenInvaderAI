@@ -298,12 +298,3 @@ def visualize_play(filename):
                     if step < len(list_data)-1:
                         step += 1
     pygame.quit()
-
-
-if __name__ == '__main__':
-    # game = GameModel()
-    # game.initialize(height=9, width=7, num=14)
-    # online_play(game)
-
-    visualize_play('Testmulti1_multi')
-    # online_play(game)
