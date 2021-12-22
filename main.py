@@ -29,12 +29,12 @@ def main():
             visualize_play(filename) 
     """
 
-    # Initialize Game
+    # __INITIALIZE GAME__
     game = GameModel()
     game.initialize(height=9, width=7, num=14)
 
-    # PLAY GAME
-    ## Human mode
+    # __PLAY GAME__
+    # Human mode
     # online_play(game)
 
     # Auto mode
