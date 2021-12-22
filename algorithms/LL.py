@@ -99,13 +99,10 @@ def a_star_search(space):
             good_move = min([abs(current_move - k) for k in invaders_columns]) <= min([abs(previous_move - k) for k in
                                                                                        invaders_columns])
         except ValueError:
-            # ValueError may occur when we finish the game i.e. all invaders are removed
+            # ValueError may occur when we finish the game i.e. all invaders are removed before reach goal state
             good_move = False
 
-        if good_move:
-            return point - cost_of_good_moves
-        else:
-            return point + cost_of_bad_moves
+        return point + cost_of_bad_moves * (good_move + 1) - cost_of_good_moves * good_move
 
     # function that check if we reach the goal state
 
