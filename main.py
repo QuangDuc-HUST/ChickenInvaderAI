@@ -35,7 +35,7 @@ def main():
 
     # PLAY GAME
     ## Human mode
-    # online_play(game)
+    online_play(game)
     # game.run(getinput)
 
     ## Auto mode
@@ -51,11 +51,11 @@ def main():
 
     ## Evaluatate multiple time
     
-    eva = game.getEvaluate()
+    # eva = game.getEvaluate()
     # eva.evamultitime(greedy_search, times= 50)
     #eva.evamultitime(expectimax_getaction, times= 5)
     # eva.evamultitime(a_star_search, 25)
-    eva.saveGame('Testmulti')
+    # eva.saveGame('Testmulti')
 
 if __name__ == '__main__':
     main()
