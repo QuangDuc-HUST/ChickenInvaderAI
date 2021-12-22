@@ -95,6 +95,7 @@ def a_star_search(space):
             good_move = min([abs(current_move - k) for k in invaders_columns]) <= min([abs(previous_move - k) for k in
                                                                                        invaders_columns])
         except ValueError:
+            # ValueError may occur when we finish the game i.e. all invaders are removed
             good_move = False
 
         if good_move:
@@ -173,6 +174,7 @@ def a_star_search(space):
                 f_temp[h - 1][state.ship_y] -= 2
                 f_temp[h - 1][temp_y] += 2
                 temp_point = heuristic2(f_temp, state.ship_y, temp_y, temp_point)
+                # collision checking
                 if (h - 1, temp_y) not in e:
                     # if that actions don't lead to collision with an egg, we will go for it
                     f_temp, i_temp, b_temp = change_bullets(f_temp, i_temp, b_temp)
