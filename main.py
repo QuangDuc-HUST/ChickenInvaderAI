@@ -10,24 +10,23 @@ from algorithms.HD import local_search
 from algorithms.QD import expectimax_getaction
 
 
-def getinput(space):
-    """
-    Normal game where gets input from the keyboard
-    """
-
-    return input('Your next move is: ')
-
-
 def main():
     """
-    You must declare GameModel with its initialization of  height, width, number of chickens (9, 7, 14)
+    You must declare GameModel with its initialization of  height, width, number of chickens (9, 7, 14) before running any algorithms
 
-    If you just play 'human model' then use online_play(game) with game: GameModel
+    If you just play 'human model' then use online_play(game).
 
     else:
-        You choose one algorithm to run by game.run(algorithm)
-        If you want to visualize the result of the algorithm. Save data by game.saveData(filename) then
-        visualize_play(filename)
+        You choose one algorithm to run by game.run(algorithm), for instance:
+
+        game.run(local_search) for local search algorithm
+        game.run(greedy_bfs) for greedy best-first algorithm
+        game.run(expectimax_getaction) for expectimax algorithm
+
+        In case you want to visualize the result of the algorithm.
+            Save data by game.saveData(filename) then ## Now it'll be the filename in data folder 
+            then  
+            visualize_play(filename) 
     """
 
     # Initialize Game
@@ -37,7 +36,6 @@ def main():
     # PLAY GAME
     ## Human mode
     # online_play(game)
-    # game.run(getinput)
 
     # Auto mode
     # game.run(local_search)
