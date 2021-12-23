@@ -35,18 +35,18 @@ def main():
 
     # __PLAY GAME__
     # Human mode
-    # online_play(game)
+    online_play(game)
 
     # Auto mode
     # game.run(local_search)
     # game.run(expectimax_getaction, maxdepth=3 , maxrandom=3)
-    game.run(greedy_bfs)
+    # game.run(greedy_bfs)
 
     # __SAVE DATA__
-    game.saveData('Test')
+    # game.saveData('Test')
 
     # __VISUALIZATION__
-    visualize_play('Test')
+    # visualize_play('Test')
 
 
 

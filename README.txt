@@ -97,6 +97,8 @@ Other files and folders
 - `data` folder: saved folder for series of action in one game.                    
 - `assets` folder: images folder used for visualization (GUI).
 - `draft` folder: old files.
+- `NotebookVersion.ipynb` file: Notebook Version for playing game.
+
 
 
 
