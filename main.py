@@ -35,30 +35,30 @@ def main():
 
     # __PLAY GAME__
     # Human mode
-    online_play(game)
+    # online_play(game)
 
     # Auto mode
     # game.run(local_search)
-    # game.run(expectimax_getaction, maxdepth=3 , maxrandom=3)
+    game.run(expectimax_getaction, maxdepth=3 , maxrandom=3)
     # game.run(greedy_bfs)
 
     # __SAVE DATA__
-    # game.saveData('Test')
+    game.saveData('Test')
 
     # __VISUALIZATION__
-    # visualize_play('Test')
+    visualize_play('Test')
 
 
 
 
-    ####
+    ############ This part for analysis
     # Evaluate multiple time
     # eva = game.getEvaluate()
     # eva.evamultitime(local_search, times= 50)
     # eva.evamultitime(expectimax_getaction, times= 5, maxdepth=3, maxrandom=3)
     # eva.evamultitime(a_star_search, 25)
     # eva.saveGame('Testmulti')
-
+    #############
 
 if __name__ == '__main__':
     main()
