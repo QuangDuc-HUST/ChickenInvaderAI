@@ -12,7 +12,7 @@ from algorithms.QD import expectimax_getaction
 
 def main():
     """
-    You must declare GameModel with its initialization of  height, width, number of chickens (9, 7, 14) before running any algorithms
+    You must declare GameModel with its initialization of height, width, number of chickens (9, 7, 14) before running any algorithms.
 
     If you just play 'human model' then use online_play(game).
 
@@ -25,8 +25,7 @@ def main():
 
         In case you want to visualize the result of the algorithm.
             Save data by game.saveData(filename) then ## Now it'll be the filename in data folder 
-            then  
-            visualize_play(filename) 
+            then visualize_play(filename) 
     """
 
     # __INITIALIZE GAME__
@@ -38,15 +37,15 @@ def main():
     # online_play(game)
 
     # Auto mode
-    # game.run(local_search)
-    game.run(expectimax_getaction, maxdepth=3 , maxrandom=3)
+    game.run(local_search)
+    # game.run(expectimax_getaction, maxdepth=3 , maxrandom=3)
     # game.run(greedy_bfs)
 
     # __SAVE DATA__
-    game.saveData('Test')
+    game.saveData('Game1')
 
     # __VISUALIZATION__
-    visualize_play('Test')
+    visualize_play('Game1')
 
 
 
